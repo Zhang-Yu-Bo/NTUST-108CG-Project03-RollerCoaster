@@ -1,21 +1,8 @@
-﻿  Uic'ing AppMain.ui...
-  Moc'ing TrainView.h...
+﻿  Moc'ing TrainView.h...
   Moc'ing AppMain.h...
   Rcc'ing AppMain.qrc...
   moc_AppMain.cpp
   moc_TrainView.cpp
-  AppMain.cpp
-  ControlPoint.cpp
-  main.cpp
-  Square.cpp
-  Track.cpp
-C:\Users\User\Desktop\Project03-RollerCoaster\NTUST-108CG-Project03-RollerCoaster\RollerCoaster\Roller Coaster\Src\Track.cpp(169,14): warning C4477: 'fprintf' : 格式字串 '%d' 需要 'int' 類型的引數，但 variadic 引數 1 的類型為 'unsigned __int64'
-  TrainView.cpp
-  Triangle.cpp
-  3DUtils.cpp
-  ArcBallCam.cpp
-  Pnt3f.cpp
   正在產生程式碼...
-C:\Users\User\Desktop\Project03-RollerCoaster\NTUST-108CG-Project03-RollerCoaster\RollerCoaster\Roller Coaster\Src\Track.cpp(169,14): message : 請考慮在格式字串中使用 '%zd'
   qrc_AppMain.cpp
   Roller Coaster.vcxproj -> C:\Users\User\Desktop\Project03-RollerCoaster\NTUST-108CG-Project03-RollerCoaster\RollerCoaster\x64\Debug\Roller Coaster.exe
