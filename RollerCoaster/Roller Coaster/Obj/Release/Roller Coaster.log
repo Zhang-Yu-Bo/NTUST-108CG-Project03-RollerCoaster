@@ -1,0 +1,20 @@
+﻿已經開始建置於 2018/7/10 下午 01:55:16。
+     1>節點 2 (build 目標) 上的專案 "D:\Graduated2\圖導\old_course\Projects\RollerCoaster_P4\RollerCoaster_Shader\RollerCoaster\Roller Coaster\Roller Coaster.vcxproj"。
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(298,5): warning MSB8004: Intermediate 目錄結尾不是結尾斜線。這個建置執行個體將會加入此斜線，因為這樣才能正確評估 Intermediate 目錄。
+     1>InitializeBuildStatus:
+         正在變更時間戳記 "Obj\Release\Roller Coaster.unsuccessfulbuild"。
+       CustomBuild:
+         Uic'ing AppMain.ui...
+         系統找不到指定的路徑。
+         Moc'ing TrainView.h...
+         系統找不到指定的路徑。
+         Moc'ing AppMain.h...
+         系統找不到指定的路徑。
+         Rcc'ing AppMain.qrc...
+         系統找不到指定的路徑。
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppCommon.targets(151,5): error MSB6006: "cmd.exe" 以返回碼 3 結束。
+     1>專案 "D:\Graduated2\圖導\old_course\Projects\RollerCoaster_P4\RollerCoaster_Shader\RollerCoaster\Roller Coaster\Roller Coaster.vcxproj" (build 目標) 建置完成 -- 失敗。
+
+建置失敗。
+
+經過時間 00:00:00.05
