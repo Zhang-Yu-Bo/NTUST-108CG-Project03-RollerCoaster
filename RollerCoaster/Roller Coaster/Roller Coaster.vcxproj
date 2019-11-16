@@ -180,9 +180,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Src\3DSLoader.cpp" />
     <ClCompile Include="Src\AppMain.cpp" />
+    <ClCompile Include="Src\CBMPLoader.cpp" />
     <ClCompile Include="Src\ControlPoint.cpp" />
     <ClCompile Include="Src\main.cpp" />
+    <ClCompile Include="Src\Model.cpp" />
+    <ClCompile Include="Src\ParticleAPI.cpp" />
     <ClCompile Include="Src\Square.cpp" />
     <ClCompile Include="Src\Track.cpp" />
     <ClCompile Include="Src\TrainView.cpp" />
@@ -190,6 +194,7 @@
     <ClCompile Include="Src\Utilities\3DUtils.cpp" />
     <ClCompile Include="Src\Utilities\ArcBallCam.cpp" />
     <ClCompile Include="Src\Utilities\Pnt3f.cpp" />
+    <ClCompile Include="Src\vector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="AppMain.ui">
@@ -215,9 +220,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_AppMain.h" />
+    <ClInclude Include="Include\3DSLoader.h" />
+    <ClInclude Include="Include\CbmpLoader.h" />
     <ClInclude Include="Include\ControlPoint.H" />
+    <ClInclude Include="Include\Model.h" />
+    <ClInclude Include="Include\ParticleAPI.h" />
+    <ClInclude Include="Include\point3d.h" />
     <ClInclude Include="Include\Square.h" />
     <ClInclude Include="Include\Track.H" />
+    <ClInclude Include="Include\vector.h" />
     <CustomBuild Include="Include\TrainView.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

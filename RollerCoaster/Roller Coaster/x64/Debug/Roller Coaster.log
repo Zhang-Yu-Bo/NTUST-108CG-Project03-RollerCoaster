@@ -3,6 +3,7 @@
   Rcc'ing AppMain.qrc...
   moc_AppMain.cpp
   moc_TrainView.cpp
+  ParticleAPI.cpp
   正在產生程式碼...
   qrc_AppMain.cpp
   Roller Coaster.vcxproj -> C:\Users\User\Desktop\Project03-RollerCoaster\NTUST-108CG-Project03-RollerCoaster\RollerCoaster\x64\Debug\Roller Coaster.exe

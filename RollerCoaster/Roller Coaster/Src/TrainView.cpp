@@ -1,4 +1,7 @@
 #include "TrainView.h"  
+#include "Model.h"
+#include "3DSLoader.h"
+#include "ParticleAPI.h"
 
 TrainView::TrainView(QWidget *parent) :  
 QGLWidget(parent)  
@@ -153,6 +156,19 @@ void TrainView::paintGL()
 		//Call square's render function, pass ModelViewMatrex and ProjectionMatrex
 		square->Paint(ProjectionMatrex,ModelViewMatrex);
 	square->End();
+
+	// Model.h draw *.obj file
+	Model* mTest = new Model("..\\..\\Roller Coaster\\x64\\Debug\\arrow.obj", 100, Point3d(0.0, 0.0, 0.0));
+	mTest->render(false, false);
+
+	// draw *.3ds file ©Ç©Çªº
+	//C3DSLoader m_3DS;
+	//m_3DS.Init("..\\..\\Roller Coaster\\x64\\Debug\\statue.3ds");
+	//m_3DS.Draw();
+
+	// Particle testing
+	ParticleAPI::ProcessParticles();
+	ParticleAPI::DrawParticles();
 }
 
 //************************************************************************
@@ -223,6 +239,7 @@ void TrainView::drawStuff(bool doingShadows)
 	// Draw the control points
 	// don't draw the control points if you're driving 
 	// (otherwise you get sea-sick as you drive through them)
+
 	if (this->camera != 2) {
 		for(size_t i = 0; i < this->m_pTrack->points.size(); ++i) {
 			if (!doingShadows) {
