@@ -2,12 +2,22 @@
 #include "Model.h"
 #include "3DSLoader.h"
 #include "ParticleAPI.h"
+#include <QtMultimedia/QMediaPlayer>
 
 TrainView::TrainView(QWidget *parent) :  
 QGLWidget(parent)  
 {  
 	resetArcball();
+
 	
+	// QMediaPlayer testing (no restart version)
+	//QMediaPlayer* player;
+	//player = new QMediaPlayer;
+	//player->setMedia(QUrl(QUrl::fromLocalFile("..\\..\\Roller Coaster\\x64\\Debug\\Stereopony-Tsukiakari No Michishirube.mp3")));
+	//player->setVolume(50);
+	//player->play();
+
+
 }  
 TrainView::~TrainView()  
 {}  
@@ -29,6 +39,7 @@ void TrainView::initializeGL()
 void TrainView::initializeTexture()
 {
 	//Load and create a texture for square;'stexture
+	system("dir");
 	QOpenGLTexture* texture = new QOpenGLTexture(QImage("./Textures/Tupi.bmp"));
 	Textures.push_back(texture);
 }
