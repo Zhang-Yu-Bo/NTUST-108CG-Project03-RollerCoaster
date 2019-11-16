@@ -161,7 +161,7 @@ void TrainView::paintGL()
 	Model* mTest = new Model("..\\..\\Roller Coaster\\x64\\Debug\\arrow.obj", 100, Point3d(0.0, 0.0, 0.0));
 	mTest->render(false, false);
 
-	// draw *.3ds file ©Ç©Çªº
+	// draw *.3ds file failed
 	//C3DSLoader m_3DS;
 	//m_3DS.Init("..\\..\\Roller Coaster\\x64\\Debug\\statue.3ds");
 	//m_3DS.Draw();
