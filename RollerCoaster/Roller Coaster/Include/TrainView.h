@@ -28,7 +28,12 @@ class TrainView : public QGLWidget, protected QOpenGLFunctions_4_3_Core
 public:  
 	explicit TrainView(QWidget *parent = 0);  
 	~TrainView();  
-
+public:
+	enum class Spline {
+		Linear,
+		CardinalCubic,
+		CubicBSpline
+	};
 public:
 	// overrides of important window things
 	//virtual int handle(int);
@@ -38,6 +43,7 @@ public:
 	// it has to be encapsulated, since we draw differently if
 	// we're drawing shadows (no colors, for example)
 	void drawStuff(bool doingShadows=false);
+	void drawTracks();
 
 	// setup the projection - assuming that the projection stack has been
 	// cleared for you
