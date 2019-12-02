@@ -1,6 +1,4 @@
 #include "TrainView.h"  
-#include "Model.h"
-#include "3DSLoader.h"
 #include "ParticleAPI.h"
 #include <QtMultimedia/QMediaPlayer>
 
@@ -35,13 +33,17 @@ void TrainView::initializeGL()
 	//Initialize texture 
 	initializeTexture();
 	
+	// Create a train object
+	this->trainModel = new Model("../../Models/Sci_fi_Train.obj", 30, Point3d(0.0, 10.0, 0.0));
 }
 void TrainView::initializeTexture()
 {
 	//Load and create a texture for square;'stexture
-	system("dir");
 	QOpenGLTexture* texture = new QOpenGLTexture(QImage("./Textures/Tupi.bmp"));
 	Textures.push_back(texture);
+	texture = new QOpenGLTexture(QImage("../../Textures/Sci fi Train color.png"));
+	Textures.push_back(texture);
+
 }
 void TrainView:: resetArcball()
 	//========================================================================
@@ -169,8 +171,8 @@ void TrainView::paintGL()
 	square->End();
 
 	// Model.h draw *.obj file
-	Model* mTest = new Model("..\\..\\Roller Coaster\\x64\\Debug\\arrow.obj", 100, Point3d(0.0, 0.0, 0.0));
-	mTest->render(false, false);
+	//Model* mTest = new Model("..\\..\\Roller Coaster\\x64\\Debug\\arrow.obj", 100, Point3d(0.0, 0.0, 0.0));
+	//mTest->render(false, false);
 
 	// draw *.3ds file failed
 	//C3DSLoader m_3DS;
@@ -346,6 +348,8 @@ void TrainView::drawStuff(bool doingShadows)
 	// TODO: 
 	//	call your own train drawing code
 	//####################################################################
+
+	this->trainModel->render(false, false);
 #ifdef EXAMPLE_SOLUTION
 	// don't draw the train if you're looking out the front window
 	if (!tw->trainCam->value())
