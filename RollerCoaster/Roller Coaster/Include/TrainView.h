@@ -63,9 +63,8 @@ public:
 
 public:
 	ArcBallCam		arcball;			// keep an ArcBall for the UI
-	int				selectedCube;  // simple - just remember which cube is selected
-
-	CTrack*			m_pTrack;		// The track of the entire scene
+	int				selectedCube;		// simple - just remember which cube is selected
+	CTrack*			m_pTrack;			// The track of the entire scene
 
 	int camera;
 	int curve;
@@ -78,5 +77,6 @@ public:
 	QVector<QOpenGLTexture*> Textures;
 	
 	Model* trainModel;
+	C3DSLoader m_3DS;
 };  
 #endif // TRAINVIEW_H  

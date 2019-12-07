@@ -34,7 +34,8 @@ void TrainView::initializeGL()
 	initializeTexture();
 	
 	// Create a train object
-	this->trainModel = new Model("../../Models/Sci_fi_Train.obj", 30, Point3d(0.0, 10.0, 0.0));
+	this->trainModel = new Model("../../Models/Sci_fi_Train.obj", 30, Point3d(0.0, 5.0, 0.0));
+	//m_3DS.Init("../../Models/Sci_fi_Train.3ds");
 }
 void TrainView::initializeTexture()
 {
@@ -175,9 +176,7 @@ void TrainView::paintGL()
 	//mTest->render(false, false);
 
 	// draw *.3ds file failed
-	//C3DSLoader m_3DS;
-	//m_3DS.Init("..\\..\\Roller Coaster\\x64\\Debug\\statue.3ds");
-	//m_3DS.Draw();
+	//this->m_3DS.Draw();
 
 	// Particle testing
 	//ParticleAPI::ProcessParticles();
@@ -272,24 +271,36 @@ void TrainView::drawStuff(bool doingShadows)
 	//####################################################################
 
 	float t_time;
-	unsigned int DIVIDE_LINE = 2;
+	unsigned int DIVIDE_LINE = 1;
 	Spline splineType = (Spline)curve;
 
 	for (size_t i = 0; i < m_pTrack->points.size(); ++i) {
+		// pos
 		Pnt3f cp_pos_p1 = m_pTrack->points[i].pos;
-		Pnt3f cp_pos_p2 = m_pTrack->points[ (i+1) % m_pTrack->points.size()].pos;
-
+		Pnt3f cp_pos_p2 = m_pTrack->points[(i + 1) % m_pTrack->points.size()].pos;
+		// orient
 		Pnt3f cp_orient_p1 = m_pTrack->points[i].orient;
 		Pnt3f cp_orient_p2 = m_pTrack->points[(i + 1) % m_pTrack->points.size()].orient;
 
 		float percent = 1.0f / DIVIDE_LINE;
 		float t = 0;
 		Pnt3f qt, qt0, qt1, orient_t;
-
 		
+		// initialize
+		switch (splineType)
+		{
+		case TrainView::Spline::Linear:
+			qt = (1.0 - t) * cp_pos_p1 + t * cp_pos_p2;
+			break;
+		case TrainView::Spline::CardinalCubic:
+			break;
+		case TrainView::Spline::CubicBSpline:
+			break;
+		default:
+			break;
+		}
 		for (size_t j = 0; j < DIVIDE_LINE; j++) {
 			qt0 = qt;
-
 			switch (splineType)
 			{
 			case TrainView::Spline::Linear:
@@ -303,7 +314,6 @@ void TrainView::drawStuff(bool doingShadows)
 				break;
 			}
 			t += percent;
-
 			switch (splineType)
 			{
 			case TrainView::Spline::Linear:
@@ -317,22 +327,20 @@ void TrainView::drawStuff(bool doingShadows)
 				break;
 			}
 			qt1 = qt;
-
-			
 		}
 		orient_t.normalize();
 		Pnt3f cross_t = (qt1 - qt0) * orient_t;
 		cross_t.normalize();
 		cross_t = cross_t * 2.5f;
 
-		glLineWidth(4);
+		glLineWidth(3);
 		glBegin(GL_LINES);
 			if (!doingShadows) {
 				glColor3ub(32, 32, 64);
 			}
 			glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
 			glVertex3f((qt1.x + cross_t.x), qt1.y + cross_t.y, (qt1.z + cross_t.z));
-
+			
 			glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y, qt0.z - cross_t.z);
 			glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y, qt1.z - cross_t.z);
 		glEnd();
@@ -348,7 +356,7 @@ void TrainView::drawStuff(bool doingShadows)
 	// TODO: 
 	//	call your own train drawing code
 	//####################################################################
-
+	glColor3f(1.0, 0.0, 0.0);
 	this->trainModel->render(false, false);
 #ifdef EXAMPLE_SOLUTION
 	// don't draw the train if you're looking out the front window
