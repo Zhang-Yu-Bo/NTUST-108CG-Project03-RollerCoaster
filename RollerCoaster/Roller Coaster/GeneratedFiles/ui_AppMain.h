@@ -344,7 +344,8 @@ public:
 "}"));
         QIcon icon2;
         icon2.addFile(QString::fromUtf8(":/AppMain/mplay.png"), QSize(), QIcon::Normal, QIcon::Off);
-        bPlay->setIcon(icon2);
+        //bPlay->setIcon(icon2);
+		bPlay->setIcon(QIcon(":/AppMain/Resources/Icons/play.ico"));
         bPlay->setIconSize(QSize(40, 40));
 
         horizontalLayout->addWidget(groupPlay);

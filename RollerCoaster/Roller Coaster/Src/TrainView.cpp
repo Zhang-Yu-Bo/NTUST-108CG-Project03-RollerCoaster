@@ -6,16 +6,14 @@ TrainView::TrainView(QWidget *parent) :
 QGLWidget(parent)  
 {  
 	resetArcball();
-
-	
 	// QMediaPlayer testing (no restart version)
 	//QMediaPlayer* player;
 	//player = new QMediaPlayer;
 	//player->setMedia(QUrl(QUrl::fromLocalFile("..\\..\\Roller Coaster\\x64\\Debug\\Stereopony-Tsukiakari No Michishirube.mp3")));
 	//player->setVolume(50);
 	//player->play();
-
-
+	this->DIVIDE_LINE = 1;
+	this->t_time = 0;
 }  
 TrainView::~TrainView()  
 {}  
@@ -34,7 +32,8 @@ void TrainView::initializeGL()
 	initializeTexture();
 	
 	// Create a train object
-	this->trainModel = new Model("../../Models/Sci_fi_Train.obj", 30, Point3d(0.0, 5.0, 0.0));
+	//this->trainModel = new Model("../../Models/Sci_fi_Train.obj", 30, Point3d(0.0, 5.0, 0.0));
+	this->trainModel = new Model("../../Models/train2.obj", 30, Point3d(0.0, 5.0, 0.0));
 	//m_3DS.Init("../../Models/Sci_fi_Train.3ds");
 }
 void TrainView::initializeTexture()
@@ -44,7 +43,8 @@ void TrainView::initializeTexture()
 	Textures.push_back(texture);
 	texture = new QOpenGLTexture(QImage("../../Textures/Sci fi Train color.png"));
 	Textures.push_back(texture);
-
+	texture = new QOpenGLTexture(QImage("../../Textures/wooden_resize.png"));
+	Textures.push_back(texture);
 }
 void TrainView:: resetArcball()
 	//========================================================================
@@ -226,6 +226,19 @@ setProjection()
 	// TODO: 
 	// put code for train view projection here!	
 	//####################################################################
+
+	//glMatrixMode(GL_PROJECTION);
+	//gluPerspective(120, 1, 1, 200); glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
+	//matrix4_look.normalize();
+	//matrix2_look.normalize();
+	//gluLookAt(matrix1_look.x, matrix1_look.y + 5,
+	//	matrix1_look.z, matrix1_look.x + matrix4_look.x,
+	//	matrix1_look.y + matrix4_look.y + 5,
+	//	matrix1_look.z + matrix4_look.z, matrix2_look.x,
+	//	matrix2_look.y + 5,
+	//	matrix2_look.z);
+
 	else {
 #ifdef EXAMPLE_SOLUTION
 		trainCamView(this,aspect);
@@ -269,9 +282,6 @@ void TrainView::drawStuff(bool doingShadows)
 	// TODO: 
 	// call your own track drawing code
 	//####################################################################
-
-	float t_time;
-	unsigned int DIVIDE_LINE = 1;
 	Spline splineType = (Spline)curve;
 
 	for (size_t i = 0; i < m_pTrack->points.size(); ++i) {
@@ -282,31 +292,39 @@ void TrainView::drawStuff(bool doingShadows)
 		Pnt3f cp_orient_p1 = m_pTrack->points[i].orient;
 		Pnt3f cp_orient_p2 = m_pTrack->points[(i + 1) % m_pTrack->points.size()].orient;
 
-		float percent = 1.0f / DIVIDE_LINE;
+		float percent = 1.0f;
 		float t = 0;
 		Pnt3f qt, qt0, qt1, orient_t;
+		float distance = 0.0;
 		
 		// initialize
 		switch (splineType)
 		{
 		case TrainView::Spline::Linear:
-			qt = (1.0 - t) * cp_pos_p1 + t * cp_pos_p2;
+			this->DIVIDE_LINE = 25;
 			break;
 		case TrainView::Spline::CardinalCubic:
+			this->DIVIDE_LINE = 3 ;
 			break;
 		case TrainView::Spline::CubicBSpline:
+			this->DIVIDE_LINE = 1;
 			break;
 		default:
 			break;
 		}
+		percent = 1.0f / this->DIVIDE_LINE;
+		qt = (1.0 - t) * cp_pos_p1 + t * cp_pos_p2;
+
 		for (size_t j = 0; j < DIVIDE_LINE; j++) {
 			qt0 = qt;
+
 			switch (splineType)
 			{
 			case TrainView::Spline::Linear:
 				orient_t = (1.0 - t) * cp_orient_p1 + t * cp_orient_p2;
 				break;
 			case TrainView::Spline::CardinalCubic:
+				orient_t = (1.0 - t) * cp_orient_p1 + t * cp_orient_p2;
 				break;
 			case TrainView::Spline::CubicBSpline:
 				break;
@@ -320,6 +338,7 @@ void TrainView::drawStuff(bool doingShadows)
 				qt = (1.0 - t) * cp_pos_p1 + t * cp_pos_p2;
 				break;
 			case TrainView::Spline::CardinalCubic:
+				qt = (1.0 - t) * cp_pos_p1 + t * cp_pos_p2;
 				break;
 			case TrainView::Spline::CubicBSpline:
 				break;
@@ -327,24 +346,45 @@ void TrainView::drawStuff(bool doingShadows)
 				break;
 			}
 			qt1 = qt;
-		}
-		orient_t.normalize();
-		Pnt3f cross_t = (qt1 - qt0) * orient_t;
-		cross_t.normalize();
-		cross_t = cross_t * 2.5f;
 
-		glLineWidth(3);
-		glBegin(GL_LINES);
+			orient_t.normalize();
+			Pnt3f cross_t = (qt1 - qt0) * orient_t;
+			cross_t.normalize();
+			cross_t = cross_t * 2.5f;
+
+			glLineWidth(4);
+			glBegin(GL_LINES);
 			if (!doingShadows) {
 				glColor3ub(32, 32, 64);
 			}
-			glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
-			glVertex3f((qt1.x + cross_t.x), qt1.y + cross_t.y, (qt1.z + cross_t.z));
-			
-			glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y, qt0.z - cross_t.z);
-			glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y, qt1.z - cross_t.z);
-		glEnd();
-		glLineWidth(1);
+				// inline
+				glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
+				glVertex3f((qt1.x + cross_t.x), qt1.y + cross_t.y, (qt1.z + cross_t.z));
+				// outline
+				glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y, qt0.z - cross_t.z);
+				glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y, qt1.z - cross_t.z);
+			glEnd();
+			glLineWidth(1);
+			if (j % 2 == 0) {
+				// track
+				glBegin(GL_POLYGON);
+				if (!doingShadows) {
+					glColor3ub(100, 85, 0);
+				}
+				//glActiveTexture(GL_TEXTURE2);
+				//this->Textures[2]->bind();
+				//glTexCoord2f(1.0, 0.0);
+				glVertex3f(qt0.x + 2 * cross_t.x, qt0.y + 2 * cross_t.y, qt0.z + 2 * cross_t.z);
+				//glTexCoord2f(1.0, 1.0);
+				glVertex3f(qt1.x + 2 * cross_t.x, qt1.y + 2 * cross_t.y, qt1.z + 2 * cross_t.z);
+				//glTexCoord2f(0.0, 1.0);
+				glVertex3f(qt1.x - 2 * cross_t.x, qt1.y - 2 * cross_t.y, qt1.z - 2 * cross_t.z);
+				//glTexCoord2f(0.0, 0.0);
+				glVertex3f(qt0.x - 2 * cross_t.x, qt0.y - 2 * cross_t.y, qt0.z - 2 * cross_t.z);
+				glEnd();
+			}
+		}
+		
 	}
 
 #ifdef EXAMPLE_SOLUTION
@@ -356,8 +396,10 @@ void TrainView::drawStuff(bool doingShadows)
 	// TODO: 
 	//	call your own train drawing code
 	//####################################################################
-	glColor3f(1.0, 0.0, 0.0);
-	this->trainModel->render(false, false);
+	//glColor3f(1.0, 1.0, 1.0);
+	//this->trainModel->render(false, false);
+	this->drawTrain(this->t_time);
+
 #ifdef EXAMPLE_SOLUTION
 	// don't draw the train if you're looking out the front window
 	if (!tw->trainCam->value())
@@ -414,4 +456,51 @@ void TrainView::
 		selectedCube = buf[3]-1;
 	} else // nothing hit, nothing selected
 		selectedCube = -1;
+}
+
+void TrainView::drawTrain(float t) {
+	t *= this->m_pTrack->points.size();
+	size_t i;
+	for (i = 0; t > 1; t -= 1)
+		i++;
+
+	//pos
+	Pnt3f cp_pos_p1 = this->m_pTrack->points[i].pos;
+	Pnt3f cp_pos_p2 = this->m_pTrack->points[(i + 1) % m_pTrack->points.size()].pos;
+	// orient
+	Pnt3f cp_orient_p1 = this->m_pTrack->points[i].orient;
+	Pnt3f cp_orient_p2 = this->m_pTrack->points[(i + 1) % m_pTrack->points.size()].orient;
+
+	Spline splineType = (Spline)curve;
+	Pnt3f qt, orient_t;
+	switch (splineType)
+	{
+	case TrainView::Spline::Linear:
+		qt = (1 - t) * cp_pos_p1 + t * cp_pos_p2;
+		orient_t = (1 - t) * cp_orient_p1 + t * cp_orient_p2;
+		break;
+	case TrainView::Spline::CardinalCubic:
+		this->DIVIDE_LINE = 3;
+		break;
+	case TrainView::Spline::CubicBSpline:
+		this->DIVIDE_LINE = 1;
+		break;
+	default:
+		break;
+	}
+
+	//glColor3ub(255, 255, 255);
+	//glBegin(GL_QUADS);
+	//	glTexCoord2f(0.0f, 0.0f);
+	//	glVertex3f(qt.x - 5, qt.y - 5, qt.z - 5);
+	//	glTexCoord2f(1.0f, 0.0f);
+	//	glVertex3f(qt.x + 5, qt.y - 5, qt.z - 5);
+	//	glTexCoord2f(1.0f, 1.0f);
+	//	glVertex3f(qt.x + 5, qt.y + 5, qt.z - 5);
+	//	glTexCoord2f(0.0f, 1.0f);
+	//	glVertex3f(qt.x - 5, qt.y + 5, qt.z - 5);
+	//glEnd();
+	glColor3ub(32, 32, 64);
+	this->trainModel->moveModel(20, Point3d(qt.x, qt.y + 5, qt.z));
+	this->trainModel->render();
 }

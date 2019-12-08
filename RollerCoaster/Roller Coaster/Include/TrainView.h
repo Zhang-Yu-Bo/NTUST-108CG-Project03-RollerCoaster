@@ -47,6 +47,8 @@ public:
 	void drawStuff(bool doingShadows=false);
 	void drawTracks();
 
+	void drawTrain(float);
+
 	// setup the projection - assuming that the projection stack has been
 	// cleared for you
 	void setProjection();
@@ -65,6 +67,9 @@ public:
 	ArcBallCam		arcball;			// keep an ArcBall for the UI
 	int				selectedCube;		// simple - just remember which cube is selected
 	CTrack*			m_pTrack;			// The track of the entire scene
+
+	float t_time;
+	unsigned int DIVIDE_LINE;
 
 	int camera;
 	int curve;
