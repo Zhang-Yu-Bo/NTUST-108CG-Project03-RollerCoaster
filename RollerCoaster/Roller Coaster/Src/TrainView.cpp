@@ -1,10 +1,11 @@
 #include "TrainView.h"  
 #include "ParticleAPI.h"
 #include <QtMultimedia/QMediaPlayer>
+#include <qmatrix.h>
 
-TrainView::TrainView(QWidget *parent) :  
-QGLWidget(parent)  
-{  
+TrainView::TrainView(QWidget* parent) :
+	QGLWidget(parent)
+{
 	resetArcball();
 	// QMediaPlayer testing (no restart version)
 	//QMediaPlayer* player;
@@ -14,9 +15,9 @@ QGLWidget(parent)
 	//player->play();
 	this->DIVIDE_LINE = 1;
 	this->t_time = 0;
-}  
-TrainView::~TrainView()  
-{}  
+}
+TrainView::~TrainView()
+{}
 void TrainView::initializeGL()
 {
 	initializeOpenGLFunctions();
@@ -30,7 +31,7 @@ void TrainView::initializeGL()
 	square->Init();
 	//Initialize texture 
 	initializeTexture();
-	
+
 	// Create a train object
 	//this->trainModel = new Model("../../Models/Sci_fi_Train.obj", 30, Point3d(0.0, 5.0, 0.0));
 	this->trainModel = new Model("../../Models/train2.obj", 30, Point3d(0.0, 5.0, 0.0));
@@ -46,8 +47,8 @@ void TrainView::initializeTexture()
 	texture = new QOpenGLTexture(QImage("../../Textures/wooden_resize.png"));
 	Textures.push_back(texture);
 }
-void TrainView:: resetArcball()
-	//========================================================================
+void TrainView::resetArcball()
+//========================================================================
 {
 	// Set up the camera to look at the world
 	// these parameters might seem magical, and they kindof are
@@ -65,17 +66,17 @@ void TrainView::paintGL()
 	//**********************************************************************
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	// Set up the view port
-	glViewport(0,0,width(),height());
+	glViewport(0, 0, width(), height());
 	// clear the window, be sure to clear the Z-Buffer too
-	glClearColor(0,0,0.3f,0);
-	
+	glClearColor(0, 0, 0.3f, 0);
+
 	// we need to clear out the stencil buffer since we'll use
 	// it for shadows
 	glClearStencil(0);
 	glEnable(GL_DEPTH);
 
 	// Blayne prefers GL_DIFFUSE
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
 	// prepare for projection
 	glMatrixMode(GL_PROJECTION);
@@ -97,7 +98,8 @@ void TrainView::paintGL()
 	if (this->camera == 1) {
 		glDisable(GL_LIGHT1);
 		glDisable(GL_LIGHT2);
-	} else {
+	}
+	else {
 		glEnable(GL_LIGHT1);
 		glEnable(GL_LIGHT2);
 	}
@@ -107,13 +109,13 @@ void TrainView::paintGL()
 	// * set the light parameters
 	//
 	//**********************************************************************
-	GLfloat lightPosition1[]	= {0,1,1,0}; // {50, 200.0, 50, 1.0};
-	GLfloat lightPosition2[]	= {1, 0, 0, 0};
-	GLfloat lightPosition3[]	= {0, -1, 0, 0};
-	GLfloat yellowLight[]		= {0.5f, 0.5f, .1f, 1.0};
-	GLfloat whiteLight[]		= {1.0f, 1.0f, 1.0f, 1.0};
-	GLfloat blueLight[]			= {.1f,.1f,.3f,1.0};
-	GLfloat grayLight[]			= {.3f, .3f, .3f, 1.0};
+	GLfloat lightPosition1[] = { 0,1,1,0 }; // {50, 200.0, 50, 1.0};
+	GLfloat lightPosition2[] = { 1, 0, 0, 0 };
+	GLfloat lightPosition3[] = { 0, -1, 0, 0 };
+	GLfloat yellowLight[] = { 0.5f, 0.5f, .1f, 1.0 };
+	GLfloat whiteLight[] = { 1.0f, 1.0f, 1.0f, 1.0 };
+	GLfloat blueLight[] = { .1f,.1f,.3f,1.0 };
+	GLfloat grayLight[] = { .3f, .3f, .3f, 1.0 };
 
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteLight);
@@ -132,7 +134,7 @@ void TrainView::paintGL()
 	//*********************************************************************
 	setupFloor();
 	glDisable(GL_LIGHTING);
-	drawFloor(200,10);
+	drawFloor(200, 10);
 
 
 	//*********************************************************************
@@ -152,23 +154,23 @@ void TrainView::paintGL()
 	}
 
 	//Get modelview matrix
- 	glGetFloatv(GL_MODELVIEW_MATRIX,ModelViewMatrex);
+	glGetFloatv(GL_MODELVIEW_MATRIX, ModelViewMatrex);
 	//Get projection matrix
- 	glGetFloatv(GL_PROJECTION_MATRIX,ProjectionMatrex);
+	glGetFloatv(GL_PROJECTION_MATRIX, ProjectionMatrex);
 
 	//Call triangle's render function, pass ModelViewMatrex and ProjectionMatrex
- 	triangle->Paint(ProjectionMatrex,ModelViewMatrex);
-    
+	triangle->Paint(ProjectionMatrex, ModelViewMatrex);
+
 	//we manage textures by Trainview class, so we modify square's render function
 	square->Begin();
-		//Active Texture
-		glActiveTexture(GL_TEXTURE0);
-		//Bind square's texture
-		Textures[0]->bind();
-		//pass texture to shader
-		square->shaderProgram->setUniformValue("Texture",0);
-		//Call square's render function, pass ModelViewMatrex and ProjectionMatrex
-		square->Paint(ProjectionMatrex,ModelViewMatrex);
+	//Active Texture
+	glActiveTexture(GL_TEXTURE0);
+	//Bind square's texture
+	Textures[0]->bind();
+	//pass texture to shader
+	square->shaderProgram->setUniformValue("Texture", 0);
+	//Call square's render function, pass ModelViewMatrex and ProjectionMatrex
+	square->Paint(ProjectionMatrex, ModelViewMatrex);
 	square->End();
 
 	// Model.h draw *.obj file
@@ -197,16 +199,17 @@ setProjection()
 	float aspect = static_cast<float>(width()) / static_cast<float>(height());
 
 	// Check whether we use the world camp
-	if (this->camera == 0){
+	if (this->camera == 0) {
 		arcball.setProjection(false);
 		update();
-	// Or we use the top cam
-	}else if (this->camera == 1) {
+		// Or we use the top cam
+	}
+	else if (this->camera == 1) {
 		float wi, he;
 		if (aspect >= 1) {
 			wi = 110;
 			he = wi / aspect;
-		} 
+		}
 		else {
 			he = 110;
 			wi = he * aspect;
@@ -218,9 +221,9 @@ setProjection()
 		glOrtho(-wi, wi, -he, he, 200, -200);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		glRotatef(-90,1,0,0);
+		glRotatef(-90, 1, 0, 0);
 		update();
-	} 
+	}
 	// Or do the train view or other view here
 	//####################################################################
 	// TODO: 
@@ -241,10 +244,38 @@ setProjection()
 
 	else {
 #ifdef EXAMPLE_SOLUTION
-		trainCamView(this,aspect);
+		trainCamView(this, aspect);
 #endif
 		update();
 	}
+}
+
+QMatrix4x3 matrixMultiply(QMatrix4x3 a, QMatrix4x4 b) {
+	float temp[3][4];
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 4; j++) {
+			temp[i][j] = 0.0f;
+			for (int k = 0; k < 4; k++) {
+				temp[i][j] += a(i,k) * b(k,j);
+			}
+		}
+	}
+
+	return QMatrix4x3((float*)temp);
+}
+
+Vector3 matrixVect4Multiply(QMatrix4x3 m, vector<float> vect) {
+	float temp[3];
+
+	for (int i = 0; i < 3; i++) {
+		temp[i] = 0.0f;
+		for (int k = 0; k < 4; k++) {
+			temp[i] += m(i,k) * vect[i];
+		}
+	}
+
+	return Vector3(temp[0], temp[1], temp[2]);
 }
 
 //************************************************************************
@@ -266,9 +297,9 @@ void TrainView::drawStuff(bool doingShadows)
 	// (otherwise you get sea-sick as you drive through them)
 
 	if (this->camera != 2) {
-		for(size_t i = 0; i < this->m_pTrack->points.size(); ++i) {
+		for (size_t i = 0; i < this->m_pTrack->points.size(); ++i) {
 			if (!doingShadows) {
-				if ( ((int) i) != selectedCube)
+				if (((int)i) != selectedCube)
 					glColor3ub(240, 60, 60);
 				else
 					glColor3ub(240, 240, 30);
@@ -288,15 +319,19 @@ void TrainView::drawStuff(bool doingShadows)
 		// pos
 		Pnt3f cp_pos_p1 = m_pTrack->points[i].pos;
 		Pnt3f cp_pos_p2 = m_pTrack->points[(i + 1) % m_pTrack->points.size()].pos;
+		Pnt3f cp_pos_p3 = m_pTrack->points[(i + 2) % m_pTrack->points.size()].pos;
+		Pnt3f cp_pos_p4 = m_pTrack->points[(i + 3) % m_pTrack->points.size()].pos;
 		// orient
 		Pnt3f cp_orient_p1 = m_pTrack->points[i].orient;
 		Pnt3f cp_orient_p2 = m_pTrack->points[(i + 1) % m_pTrack->points.size()].orient;
+		Pnt3f cp_orient_p3 = m_pTrack->points[(i + 2) % m_pTrack->points.size()].orient;
+		Pnt3f cp_orient_p4 = m_pTrack->points[(i + 3) % m_pTrack->points.size()].orient;
 
 		float percent = 1.0f;
 		float t = 0;
 		Pnt3f qt, qt0, qt1, orient_t;
 		float distance = 0.0;
-		
+
 		// initialize
 		switch (splineType)
 		{
@@ -304,10 +339,10 @@ void TrainView::drawStuff(bool doingShadows)
 			this->DIVIDE_LINE = 25;
 			break;
 		case TrainView::Spline::CardinalCubic:
-			this->DIVIDE_LINE = 3 ;
+			this->DIVIDE_LINE = 50;
 			break;
 		case TrainView::Spline::CubicBSpline:
-			this->DIVIDE_LINE = 1;
+			this->DIVIDE_LINE = 25;
 			break;
 		default:
 			break;
@@ -315,8 +350,28 @@ void TrainView::drawStuff(bool doingShadows)
 		percent = 1.0f / this->DIVIDE_LINE;
 		qt = (1.0 - t) * cp_pos_p1 + t * cp_pos_p2;
 
+		float g1Arr[12] =
+		{
+			cp_orient_p1.x, cp_orient_p2.x, cp_orient_p3.x, cp_orient_p4.x,
+			cp_orient_p1.y, cp_orient_p2.y, cp_orient_p3.y, cp_orient_p4.y,
+			cp_orient_p1.z, cp_orient_p2.z, cp_orient_p3.z, cp_orient_p4.z,
+		};
+
+		float g2Arr[12] =
+		{
+			cp_pos_p1.x, cp_pos_p2.x, cp_pos_p3.x, cp_pos_p4.x,
+			cp_pos_p1.y, cp_pos_p2.y, cp_pos_p3.y, cp_pos_p4.y,
+			cp_pos_p1.z, cp_pos_p2.z, cp_pos_p3.z, cp_pos_p4.z,
+		};
+
+		QMatrix4x3 g1Matrix = QMatrix4x3(g1Arr), g2Matrix = QMatrix4x3(g2Arr), GMMatrix;
 		for (size_t j = 0; j < DIVIDE_LINE; j++) {
 			qt0 = qt;
+
+			float tension = 0.6;
+			float* mArr;
+			QMatrix4x4 mMatrix;
+			Vector3 vect;
 
 			switch (splineType)
 			{
@@ -324,23 +379,79 @@ void TrainView::drawStuff(bool doingShadows)
 				orient_t = (1.0 - t) * cp_orient_p1 + t * cp_orient_p2;
 				break;
 			case TrainView::Spline::CardinalCubic:
-				orient_t = (1.0 - t) * cp_orient_p1 + t * cp_orient_p2;
+				mArr = new float[16]{
+					-1.0f, 2.0f, -1.0f, 0.0f,
+					2.0f / tension - 1.0f, -3.0f / tension + 1.0f, 0.0f, 1.0f / tension,
+					-2.0f / tension + 1.0f, 3.0f / tension - 2.0f, 1.0f, 0.0f,
+					1.0f, -1.0f, 0.0f, 0.0f
+				};
+				mMatrix = QMatrix4x4(mArr) * tension;
+
+				GMMatrix = matrixMultiply(g1Matrix, mMatrix);
+				vect = matrixVect4Multiply(GMMatrix, vector<float> { t* t* t, t* t, t, 1.0f} );
+
+				orient_t.x = vect.x;
+				orient_t.y = vect.y;
+				orient_t.z = vect.z;
 				break;
 			case TrainView::Spline::CubicBSpline:
+				mArr = new float[16]{
+					-1.0f, 3.0f, -3.0f, 1.0f,
+					3.0f, -6.0f, 0.0f, 4.0f,
+					-3.0f, 3.0f, 3.0f, 1.0f,
+					1.0f, 0.0f, 0.0f, 0.0f
+				};
+
+				mMatrix = QMatrix4x4(mArr) * 1.0f / 6.0f;
+				GMMatrix = matrixMultiply(g1Matrix, mMatrix);
+				vect = matrixVect4Multiply(GMMatrix, vector<float> { t* t* t, t* t, t, 1.0f});
+
+				qt.x = vect.x;
+				qt.y = vect.y;
+				qt.z = vect.z;
 				break;
 			default:
 				break;
 			}
 			t += percent;
+
 			switch (splineType)
 			{
 			case TrainView::Spline::Linear:
 				qt = (1.0 - t) * cp_pos_p1 + t * cp_pos_p2;
+
 				break;
 			case TrainView::Spline::CardinalCubic:
-				qt = (1.0 - t) * cp_pos_p1 + t * cp_pos_p2;
+				mArr = new float[16]{
+					-1.0f, 2.0f, -1.0f, 0.0f,
+					2.0f / tension - 1.0f, -3.0f / tension + 1.0f, 0.0f, 1.0f / tension,
+					-2.0f / tension + 1.0f, 3.0f / tension - 2.0f, 1.0f, 0.0f,
+					1.0f, -1.0f, 0.0f, 0.0f
+				};
+				mMatrix = QMatrix4x4(mArr) * tension;
+
+				GMMatrix = matrixMultiply(g2Matrix, mMatrix);
+				vect = matrixVect4Multiply(GMMatrix, vector<float> { t* t* t, t* t, t, 1.0f});
+
+				qt.x = vect.x;
+				qt.y = vect.y;
+				qt.z = vect.z;
 				break;
 			case TrainView::Spline::CubicBSpline:
+				mArr = new float[16]{
+					-1.0f, 3.0f, -3.0f, 1.0f,
+					3.0f, -6.0f, 0.0f, 4.0f,
+					-3.0f, 3.0f, 3.0f, 1.0f,
+					1.0f, 0.0f, 0.0f, 0.0f
+				};
+
+				mMatrix = QMatrix4x4(mArr) * 1.0f / 6.0f;
+				GMMatrix = matrixMultiply(g2Matrix, mMatrix);
+				vect = matrixVect4Multiply(GMMatrix, vector<float> { t* t* t, t* t, t, 1.0f});
+
+				qt.x = vect.x;
+				qt.y = vect.y;
+				qt.z = vect.z;
 				break;
 			default:
 				break;
@@ -354,9 +465,9 @@ void TrainView::drawStuff(bool doingShadows)
 
 			glLineWidth(4);
 			glBegin(GL_LINES);
-			if (!doingShadows) {
-				glColor3ub(32, 32, 64);
-			}
+				if (!doingShadows) {
+					glColor3ub(32, 32, 64);
+				}
 				// inline
 				glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
 				glVertex3f((qt1.x + cross_t.x), qt1.y + cross_t.y, (qt1.z + cross_t.z));
@@ -384,7 +495,7 @@ void TrainView::drawStuff(bool doingShadows)
 				glEnd();
 			}
 		}
-		
+
 	}
 
 #ifdef EXAMPLE_SOLUTION
@@ -412,8 +523,8 @@ void TrainView::drawTracks() {
 }
 
 void TrainView::
-	doPick(int mx, int my)
-	//========================================================================
+doPick(int mx, int my)
+//========================================================================
 {
 	// since we'll need to do some GL stuff so we make this window as 
 	// active window
@@ -424,9 +535,9 @@ void TrainView::
 	glGetIntegerv(GL_VIEWPORT, viewport);
 
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity ();
+	glLoadIdentity();
 
-	gluPickMatrix((double)mx, (double)(viewport[3]-my), 
+	gluPickMatrix((double)mx, (double)(viewport[3] - my),
 		5, 5, viewport);
 
 	// now set up the projection
@@ -434,15 +545,15 @@ void TrainView::
 
 	// now draw the objects - but really only see what we hit
 	GLuint buf[100];
-	glSelectBuffer(100,buf);
+	glSelectBuffer(100, buf);
 	glRenderMode(GL_SELECT);
 	glInitNames();
 	glPushName(0);
 
 
 	// draw the cubes, loading the names as we go
-	for(size_t i=0; i<m_pTrack->points.size(); ++i) {
-		glLoadName((GLuint) (i+1));
+	for (size_t i = 0; i < m_pTrack->points.size(); ++i) {
+		glLoadName((GLuint)(i + 1));
 		m_pTrack->points[i].draw();
 	}
 
@@ -453,8 +564,9 @@ void TrainView::
 		// are multiple objects, you really want to pick the closest
 		// one - see the OpenGL manual 
 		// remember: we load names that are one more than the index
-		selectedCube = buf[3]-1;
-	} else // nothing hit, nothing selected
+		selectedCube = buf[3] - 1;
+	}
+	else // nothing hit, nothing selected
 		selectedCube = -1;
 }
 
