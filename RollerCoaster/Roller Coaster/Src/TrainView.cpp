@@ -1,5 +1,4 @@
 #include "TrainView.h"  
-#include "Model.h"
 #include "3DSLoader.h"
 #include "ParticleAPI.h"
 #include <QtMultimedia/QMediaPlayer>
@@ -16,8 +15,6 @@ QGLWidget(parent)
 	//player->setMedia(QUrl(QUrl::fromLocalFile("..\\..\\Roller Coaster\\x64\\Debug\\Stereopony-Tsukiakari No Michishirube.mp3")));
 	//player->setVolume(50);
 	//player->play();
-
-
 }  
 TrainView::~TrainView()  
 {}  
@@ -34,6 +31,8 @@ void TrainView::initializeGL()
 	square->Init();
 	//Initialize texture 
 	initializeTexture();
+
+	this->trainModel = new Model("..\\..\\Models\\11709_train_v1_L3.obj", 100, Point3d(0.0, 5.0, 0.0));
 	
 }
 void TrainView::initializeTexture()
@@ -139,6 +138,8 @@ void TrainView::paintGL()
 	glEnable(GL_LIGHTING);
 	setupObjects();
 
+	this->trainModel->render(false, false);
+
 	drawStuff();
 
 	// this time drawing is for shadows (except for top view)
@@ -167,10 +168,7 @@ void TrainView::paintGL()
 		//Call square's render function, pass ModelViewMatrex and ProjectionMatrex
 		square->Paint(ProjectionMatrex,ModelViewMatrex);
 	square->End();
-
-	// Model.h draw *.obj file
-	Model* mTest = new Model("..\\..\\Roller Coaster\\x64\\Debug\\arrow.obj", 100, Point3d(0.0, 0.0, 0.0));
-	mTest->render(false, false);
+	
 
 	// draw *.3ds file failed
 	//C3DSLoader m_3DS;
@@ -269,8 +267,14 @@ void TrainView::drawStuff(bool doingShadows)
 	// call your own track drawing code
 	//####################################################################
 
+	// Model.h draw *.obj file
+	//Model* mTest = new Model("..\\..\\Models\\Sci_fi_Train.obj", 30, Point3d(0.0, 5.0, 0.0));
+	//mTest->render(false, false);
+	//delete mTest;
+	
+
 	float t_time;
-	unsigned int DIVIDE_LINE = 2;
+	unsigned int DIVIDE_LINE = 1;
 	Spline splineType = (Spline)curve;
 
 	for (size_t i = 0; i < m_pTrack->points.size(); ++i) {

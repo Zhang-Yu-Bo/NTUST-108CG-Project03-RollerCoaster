@@ -39,6 +39,9 @@
     <Filter Include="Header Files\Utilities">
       <UniqueIdentifier>{2ec37186-5191-4bbe-99cb-cae9dd6569c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Models">
+      <UniqueIdentifier>{0e70a276-6943-4b7e-85b1-8ca2853bd79b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\qrc_AppMain.cpp">
