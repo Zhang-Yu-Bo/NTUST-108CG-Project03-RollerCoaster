@@ -62,6 +62,8 @@ public:
 	void initializeGL();
 	void initializeTexture();
 
+	Vector3 getCardinalGMTmatrix(int, float, float, int);
+	Vector3 getBSplineGMTmatrix(int, float, int);
 
 public:
 	ArcBallCam		arcball;			// keep an ArcBall for the UI
