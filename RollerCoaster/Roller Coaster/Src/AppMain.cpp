@@ -6,6 +6,8 @@
 #include <time.h>
 
 AppMain* AppMain::Instance = NULL;
+static unsigned long lastRedraw = 0;
+
 AppMain::AppMain(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -137,6 +139,14 @@ bool AppMain::eventFilter(QObject *watched, QEvent *e) {
 			this->canpan = true;
 	}
 
+	// update train position
+	if (this->trainview->isrun) {
+		if (clock() - lastRedraw > CLOCKS_PER_SEC / 30) {
+			lastRedraw = clock();
+			this->advanceTrain();
+			this->damageMe();
+		}
+	}
 	return QWidget::eventFilter(watched, e);
 }
 
@@ -277,10 +287,9 @@ void AppMain::ChangeTrackType( QString type )
 	}
 }
 
-static unsigned long lastRedraw = 0;
 void AppMain::SwitchPlayAndPause()
 {
-	if( !this->trainview->isrun )
+	if( this->trainview->isrun )
 	{
 		ui.bPlay->setIcon(QIcon(":/AppMain/Resources/Icons/play.ico"));
 		this->trainview->isrun = !this->trainview->isrun;
@@ -289,13 +298,6 @@ void AppMain::SwitchPlayAndPause()
 	{
 		ui.bPlay->setIcon(QIcon(":/AppMain/Resources/Icons/pause.ico"));
 		this->trainview->isrun = !this->trainview->isrun;
-	}
-	if(this->trainview->isrun){
-		if (clock() - lastRedraw > CLOCKS_PER_SEC/30) {
-			lastRedraw = clock();
-			this->advanceTrain();
-			this->damageMe();
-		}
 	}
 }
 
@@ -482,4 +484,7 @@ advanceTrain(float dir)
 	//#####################################################################
 	// TODO: make this work for your train
 	//#####################################################################
+	trainview->t_time += (dir / m_Track.points.size() / trainview->DIVIDE_LINE);
+	if (trainview->t_time > 1.0f)
+		trainview->t_time -= 1.0f;
 }

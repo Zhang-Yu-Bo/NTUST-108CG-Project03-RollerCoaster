@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'AppMain.ui'
 **
-** Created by: Qt User Interface Compiler version 5.12.5
+** Created by: Qt User Interface Compiler version 5.13.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -344,7 +344,8 @@ public:
 "}"));
         QIcon icon2;
         icon2.addFile(QString::fromUtf8(":/AppMain/mplay.png"), QSize(), QIcon::Normal, QIcon::Off);
-        bPlay->setIcon(icon2);
+        //bPlay->setIcon(icon2);
+		bPlay->setIcon(QIcon(":/AppMain/Resources/Icons/play.ico"));
         bPlay->setIconSize(QSize(40, 40));
 
         horizontalLayout->addWidget(groupPlay);
@@ -602,50 +603,50 @@ public:
 
     void retranslateUi(QMainWindow *AppMainClass)
     {
-        AppMainClass->setWindowTitle(QApplication::translate("AppMainClass", "AppMain", nullptr));
-        aExit->setText(QApplication::translate("AppMainClass", "Exit", nullptr));
-        aLoadPath->setText(QApplication::translate("AppMainClass", "Load Path", nullptr));
-        aSavePath->setText(QApplication::translate("AppMainClass", "Save Path", nullptr));
-        aWorld->setText(QApplication::translate("AppMainClass", "World", nullptr));
-        aTop->setText(QApplication::translate("AppMainClass", "Top", nullptr));
-        aTrain->setText(QApplication::translate("AppMainClass", "Train", nullptr));
-        aLinear->setText(QApplication::translate("AppMainClass", "Linear", nullptr));
-        aCardinal->setText(QApplication::translate("AppMainClass", "Cardinal", nullptr));
-        aCubic->setText(QApplication::translate("AppMainClass", "Cubic", nullptr));
-        aLine->setText(QApplication::translate("AppMainClass", "Line", nullptr));
-        aTrack->setText(QApplication::translate("AppMainClass", "Track", nullptr));
-        aRoad->setText(QApplication::translate("AppMainClass", "Road", nullptr));
-        groupCamera->setTitle(QApplication::translate("AppMainClass", "Camera", nullptr));
-        comboCamera->setItemText(0, QApplication::translate("AppMainClass", "World", nullptr));
-        comboCamera->setItemText(1, QApplication::translate("AppMainClass", "Top", nullptr));
-        comboCamera->setItemText(2, QApplication::translate("AppMainClass", "Train", nullptr));
+        AppMainClass->setWindowTitle(QCoreApplication::translate("AppMainClass", "AppMain", nullptr));
+        aExit->setText(QCoreApplication::translate("AppMainClass", "Exit", nullptr));
+        aLoadPath->setText(QCoreApplication::translate("AppMainClass", "Load Path", nullptr));
+        aSavePath->setText(QCoreApplication::translate("AppMainClass", "Save Path", nullptr));
+        aWorld->setText(QCoreApplication::translate("AppMainClass", "World", nullptr));
+        aTop->setText(QCoreApplication::translate("AppMainClass", "Top", nullptr));
+        aTrain->setText(QCoreApplication::translate("AppMainClass", "Train", nullptr));
+        aLinear->setText(QCoreApplication::translate("AppMainClass", "Linear", nullptr));
+        aCardinal->setText(QCoreApplication::translate("AppMainClass", "Cardinal", nullptr));
+        aCubic->setText(QCoreApplication::translate("AppMainClass", "Cubic", nullptr));
+        aLine->setText(QCoreApplication::translate("AppMainClass", "Line", nullptr));
+        aTrack->setText(QCoreApplication::translate("AppMainClass", "Track", nullptr));
+        aRoad->setText(QCoreApplication::translate("AppMainClass", "Road", nullptr));
+        groupCamera->setTitle(QCoreApplication::translate("AppMainClass", "Camera", nullptr));
+        comboCamera->setItemText(0, QCoreApplication::translate("AppMainClass", "World", nullptr));
+        comboCamera->setItemText(1, QCoreApplication::translate("AppMainClass", "Top", nullptr));
+        comboCamera->setItemText(2, QCoreApplication::translate("AppMainClass", "Train", nullptr));
 
-        groupCurve->setTitle(QApplication::translate("AppMainClass", "Curve", nullptr));
-        comboCurve->setItemText(0, QApplication::translate("AppMainClass", "Linear", nullptr));
-        comboCurve->setItemText(1, QApplication::translate("AppMainClass", "Cardinal", nullptr));
-        comboCurve->setItemText(2, QApplication::translate("AppMainClass", "Cubic", nullptr));
+        groupCurve->setTitle(QCoreApplication::translate("AppMainClass", "Curve", nullptr));
+        comboCurve->setItemText(0, QCoreApplication::translate("AppMainClass", "Linear", nullptr));
+        comboCurve->setItemText(1, QCoreApplication::translate("AppMainClass", "Cardinal", nullptr));
+        comboCurve->setItemText(2, QCoreApplication::translate("AppMainClass", "Cubic", nullptr));
 
-        groupTrack->setTitle(QApplication::translate("AppMainClass", "Track", nullptr));
-        comboTrack->setItemText(0, QApplication::translate("AppMainClass", "Line", nullptr));
-        comboTrack->setItemText(1, QApplication::translate("AppMainClass", "Track", nullptr));
-        comboTrack->setItemText(2, QApplication::translate("AppMainClass", "Road", nullptr));
+        groupTrack->setTitle(QCoreApplication::translate("AppMainClass", "Track", nullptr));
+        comboTrack->setItemText(0, QCoreApplication::translate("AppMainClass", "Line", nullptr));
+        comboTrack->setItemText(1, QCoreApplication::translate("AppMainClass", "Track", nullptr));
+        comboTrack->setItemText(2, QCoreApplication::translate("AppMainClass", "Road", nullptr));
 
-        groupPlay->setTitle(QApplication::translate("AppMainClass", "Play", nullptr));
+        groupPlay->setTitle(QCoreApplication::translate("AppMainClass", "Play", nullptr));
         bPlay->setText(QString());
-        groupCP->setTitle(QApplication::translate("AppMainClass", "Ctrl Point", nullptr));
+        groupCP->setTitle(QCoreApplication::translate("AppMainClass", "Ctrl Point", nullptr));
         bAdd->setText(QString());
         bDelete->setText(QString());
-        groupBox->setTitle(QApplication::translate("AppMainClass", "Rotate CP X", nullptr));
+        groupBox->setTitle(QCoreApplication::translate("AppMainClass", "Rotate CP X", nullptr));
         rcpxadd->setText(QString());
         rcpxsub->setText(QString());
-        groupBox_2->setTitle(QApplication::translate("AppMainClass", "Rotate CP Z", nullptr));
+        groupBox_2->setTitle(QCoreApplication::translate("AppMainClass", "Rotate CP Z", nullptr));
         rcpzadd->setText(QString());
         rcpzsub->setText(QString());
-        menuFile->setTitle(QApplication::translate("AppMainClass", "File", nullptr));
-        menuCamera->setTitle(QApplication::translate("AppMainClass", "Camera", nullptr));
-        menuCurve->setTitle(QApplication::translate("AppMainClass", "Curve", nullptr));
-        menuTrack->setTitle(QApplication::translate("AppMainClass", "Track", nullptr));
-        menuVelocity->setTitle(QApplication::translate("AppMainClass", "Velocity", nullptr));
+        menuFile->setTitle(QCoreApplication::translate("AppMainClass", "File", nullptr));
+        menuCamera->setTitle(QCoreApplication::translate("AppMainClass", "Camera", nullptr));
+        menuCurve->setTitle(QCoreApplication::translate("AppMainClass", "Curve", nullptr));
+        menuTrack->setTitle(QCoreApplication::translate("AppMainClass", "Track", nullptr));
+        menuVelocity->setTitle(QCoreApplication::translate("AppMainClass", "Velocity", nullptr));
     } // retranslateUi
 
 };

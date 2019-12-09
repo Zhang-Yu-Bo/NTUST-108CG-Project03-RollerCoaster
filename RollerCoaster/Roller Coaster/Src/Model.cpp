@@ -13,8 +13,8 @@ Model::Model(const QString &filePath, int s, Point3d p)
 	if (!file.open(QIODevice::ReadOnly))
 		return;
 
-	Point3d boundsMin( 1e9, 1e9, 1e9);
-	Point3d boundsMax(-1e9,-1e9,-1e9);
+	this->boundsMin = Point3d(1e9, 1e9, 1e9);
+	this->boundsMax = Point3d(-1e9, -1e9, -1e9);
 
 	QTextStream in(&file);
 	while (!in.atEnd()) {
@@ -60,11 +60,11 @@ Model::Model(const QString &filePath, int s, Point3d p)
 					m_pointIndices << p[(i + 2) % 4];
 		}
 	}
-
-	const Point3d bounds = boundsMax - boundsMin;
-	const qreal scale = s / qMax(bounds.x, qMax(bounds.y, bounds.z));
+	this->m_points_copy = this->m_points;
+	this->bounds = boundsMax - boundsMin;
+	this->scale = s / qMax(bounds.x, qMax(bounds.y, bounds.z));
 	for (int i = 0; i < m_points.size(); ++i)
-		m_points[i] = (m_points[i] + p - (boundsMin + bounds * 0.5)) * scale;
+		m_points[i] = (m_points[i] + p - (boundsMin + bounds * 0.5)) * this->scale;
 
 	m_normals.resize(m_points.size());
 	for (int i = 0; i < m_pointIndices.size(); i += 3) {
@@ -80,6 +80,8 @@ Model::Model(const QString &filePath, int s, Point3d p)
 
 	for (int i = 0; i < m_normals.size(); ++i)
 		m_normals[i] = m_normals[i].normalize();
+
+	this->position = p;
 }
 
 void Model::render(bool wireframe, bool normals) const
@@ -115,4 +117,28 @@ void Model::render(bool wireframe, bool normals) const
 	}
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisable(GL_DEPTH_TEST);
+}
+
+void Model::moveModel(int s, Point3d p) {
+	this->bounds = boundsMax - boundsMin;
+	this->scale = s / qMax(bounds.x, qMax(bounds.y, bounds.z));
+	for (int i = 0; i < m_points.size(); ++i)
+		m_points[i] = (m_points_copy[i] + p - (boundsMin + bounds * 0.5)) * this->scale;
+	
+	m_normals.resize(m_points.size());
+	for (int i = 0; i < m_pointIndices.size(); i += 3) {
+		const Point3d a = m_points.at(m_pointIndices.at(i));
+		const Point3d b = m_points.at(m_pointIndices.at(i + 1));
+		const Point3d c = m_points.at(m_pointIndices.at(i + 2));
+	
+		const Point3d normal = cross(b - a, c - a).normalize();
+	
+		for (int j = 0; j < 3; ++j)
+			m_normals[m_pointIndices.at(i + j)] += normal;
+	}
+	
+	for (int i = 0; i < m_normals.size(); ++i)
+		m_normals[i] = m_normals[i].normalize();
+	
+	this->position = p;
 }

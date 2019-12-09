@@ -12,6 +12,7 @@
 #include "Triangle.h"
 #include "Square.h"
 #include "Model.h"
+#include "3DSLoader.h"
 
 class AppMain;
 class CTrack;
@@ -46,6 +47,8 @@ public:
 	void drawStuff(bool doingShadows=false);
 	void drawTracks();
 
+	void drawTrain(float);
+
 	// setup the projection - assuming that the projection stack has been
 	// cleared for you
 	void setProjection();
@@ -62,9 +65,11 @@ public:
 
 public:
 	ArcBallCam		arcball;			// keep an ArcBall for the UI
-	int				selectedCube;  // simple - just remember which cube is selected
+	int				selectedCube;		// simple - just remember which cube is selected
+	CTrack*			m_pTrack;			// The track of the entire scene
 
-	CTrack*			m_pTrack;		// The track of the entire scene
+	float t_time;
+	unsigned int DIVIDE_LINE;
 
 	int camera;
 	int curve;
@@ -75,8 +80,8 @@ public:
 	GLfloat ProjectionMatrex[16];
 	GLfloat ModelViewMatrex[16];
 	QVector<QOpenGLTexture*> Textures;
-
+	
 	Model* trainModel;
-
+	C3DSLoader m_3DS;
 };  
 #endif // TRAINVIEW_H  
