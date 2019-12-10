@@ -325,7 +325,7 @@ void TrainView::drawStuff(bool doingShadows)
 
 		float percent = 1.0f;
 		float t = 0;
-		float tension = 0.6;
+		float tension = 0.7;
 		Pnt3f qt, qt0, qt1, orient_t;
 		Vector3 vect;
 
@@ -338,14 +338,14 @@ void TrainView::drawStuff(bool doingShadows)
 			break;
 		case TrainView::Spline::CardinalCubic:
 			this->DIVIDE_LINE = 25;
-			vect = this->getCardinalGMTmatrix(0, t, tension, 1);
+			vect = this->getCardinalGMTmatrix(i, t, tension, 1);
 			qt.x = vect.x;
 			qt.y = vect.y;
 			qt.z = vect.z;
 			break;
 		case TrainView::Spline::CubicBSpline:
 			this->DIVIDE_LINE = 25;
-			vect = this->getBSplineGMTmatrix(0, t, 1);
+			vect = this->getBSplineGMTmatrix(i, t, 1);
 			qt.x = vect.x;
 			qt.y = vect.y;
 			qt.z = vect.z;
@@ -412,15 +412,21 @@ void TrainView::drawStuff(bool doingShadows)
 				if (!doingShadows) {
 					glColor3ub(32, 32, 64);
 				}
-				// inline
-				glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
-				glVertex3f((qt1.x + cross_t.x), qt1.y + cross_t.y, (qt1.z + cross_t.z));
-				// outline
-				glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y, qt0.z - cross_t.z);
-				glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y, qt1.z - cross_t.z);
+				if (this->track == 0) {
+					glVertex3f(qt0.x, qt0.y, qt0.z);
+					glVertex3f(qt1.x, qt1.y, qt1.z);
+				}
+				else {
+					// inline
+					glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
+					glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y, qt1.z + cross_t.z);
+					// outline
+					glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y, qt0.z - cross_t.z);
+					glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y, qt1.z - cross_t.z);
+				}
 			glEnd();
 			glLineWidth(1);
-			if (j % 2 == 0) {
+			if ((this->track == 1 && j % 2 == 0) || this->track == 2) {
 				// track
 				glBegin(GL_POLYGON);
 				if (!doingShadows) {
@@ -598,9 +604,24 @@ Vector3 TrainView::getCardinalGMTmatrix(int i, float t, float tension, int type)
 		1.0f, -1.0f, 0.0f, 0.0f
 	};
 	QMatrix4x4 mMatrix = QMatrix4x4(mArr) * tension;
-	
-	GMMatrix = matrixMultiply(gMatrix, mMatrix);
-	resultVector = matrixVect4Multiply(GMMatrix, vector<float> { t* t* t, t* t, t, 1.0f} );
+	vector<float> tN = { t * t * t, t * t, t, 1.0f };
+	//GMMatrix = matrixMultiply(gMatrix, mMatrix);
+	//resultVector = matrixVect4Multiply(GMMatrix, vector<float> { t* t* t, t* t, t, 1.0f} );
+
+	resultVector.x = ((mArr[0] * tN[0] + mArr[1] * tN[1] + mArr[2] * tN[2] + mArr[3]) * cp_p0.x +
+		(mArr[4] * tN[0] + mArr[5] * tN[1] + mArr[6] * tN[2] + mArr[7]) * cp_p1.x +
+		(mArr[8] * tN[0] + mArr[9] * tN[1] + mArr[10] * tN[2] + mArr[11]) * cp_p2.x +
+		(mArr[12] * tN[0] + mArr[13] * tN[1] + mArr[14] * tN[2] + mArr[15]) * cp_p3.x)* tension;
+
+	resultVector.y = ((mArr[0] * tN[0] + mArr[1] * tN[1] + mArr[2] * tN[2] + mArr[3]) * cp_p0.y +
+		(mArr[4] * tN[0] + mArr[5] * tN[1] + mArr[6] * tN[2] + mArr[7]) * cp_p1.y +
+		(mArr[8] * tN[0] + mArr[9] * tN[1] + mArr[10] * tN[2] + mArr[11]) * cp_p2.y +
+		(mArr[12] * tN[0] + mArr[13] * tN[1] + mArr[14] * tN[2] + mArr[15]) * cp_p3.y)* tension;
+
+	resultVector.z = ((mArr[0] * tN[0] + mArr[1] * tN[1] + mArr[2] * tN[2] + mArr[3]) * cp_p0.z +
+		(mArr[4] * tN[0] + mArr[5] * tN[1] + mArr[6] * tN[2] + mArr[7]) * cp_p1.z +
+		(mArr[8] * tN[0] + mArr[9] * tN[1] + mArr[10] * tN[2] + mArr[11]) * cp_p2.z +
+		(mArr[12] * tN[0] + mArr[13] * tN[1] + mArr[14] * tN[2] + mArr[15]) * cp_p3.z) * tension;
 
 	return resultVector;
 }
@@ -642,8 +663,25 @@ Vector3 TrainView::getBSplineGMTmatrix(int i, float t, int type) {
 	};
 	
 	QMatrix4x4 mMatrix = QMatrix4x4(mArr) * 1.0f / 6.0f;
-	GMMatrix = matrixMultiply(gMatrix, mMatrix);
-	resultVector = matrixVect4Multiply(GMMatrix, vector<float> { t* t* t, t* t, t, 1.0f});
+	vector<float> tN = { t * t * t, t * t, t, 1.0f };
+
+	//GMMatrix = matrixMultiply(gMatrix, mMatrix);
+	//resultVector = matrixVect4Multiply(GMMatrix, vector<float> { t* t* t, t* t, t, 1.0f});
+
+	resultVector.x = ((mArr[0] * tN[0] + mArr[1] * tN[1] + mArr[2] * tN[2] + mArr[3]) * cp_p0.x +
+		(mArr[4] * tN[0] + mArr[5] * tN[1] + mArr[6] * tN[2] + mArr[7]) * cp_p1.x +
+		(mArr[8] * tN[0] + mArr[9] * tN[1] + mArr[10] * tN[2] + mArr[11]) * cp_p2.x +
+		(mArr[12] * tN[0] + mArr[13] * tN[1] + mArr[14] * tN[2] + mArr[15]) * cp_p3.x) / 6;
+
+	resultVector.y = ((mArr[0] * tN[0] + mArr[1] * tN[1] + mArr[2] * tN[2] + mArr[3]) * cp_p0.y +
+		(mArr[4] * tN[0] + mArr[5] * tN[1] + mArr[6] * tN[2] + mArr[7]) * cp_p1.y +
+		(mArr[8] * tN[0] + mArr[9] * tN[1] + mArr[10] * tN[2] + mArr[11]) * cp_p2.y +
+		(mArr[12] * tN[0] + mArr[13] * tN[1] + mArr[14] * tN[2] + mArr[15]) * cp_p3.y) / 6;
+
+	resultVector.z = ((mArr[0] * tN[0] + mArr[1] * tN[1] + mArr[2] * tN[2] + mArr[3]) * cp_p0.z +
+		(mArr[4] * tN[0] + mArr[5] * tN[1] + mArr[6] * tN[2] + mArr[7]) * cp_p1.z +
+		(mArr[8] * tN[0] + mArr[9] * tN[1] + mArr[10] * tN[2] + mArr[11]) * cp_p2.z +
+		(mArr[12] * tN[0] + mArr[13] * tN[1] + mArr[14] * tN[2] + mArr[15]) * cp_p3.z) / 6;
 
 	return resultVector;
 }
