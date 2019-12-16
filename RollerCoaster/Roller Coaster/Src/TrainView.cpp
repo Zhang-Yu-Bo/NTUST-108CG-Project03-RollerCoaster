@@ -535,6 +535,8 @@ void TrainView::drawTrain(float t) {
 
 	Spline splineType = (Spline)curve;
 	Pnt3f qt, orient_t;
+	Vector3 position;
+	float tension = 0.7;
 	switch (splineType)
 	{
 	case TrainView::Spline::Linear:
@@ -542,15 +544,21 @@ void TrainView::drawTrain(float t) {
 		orient_t = (1 - t) * cp_orient_p1 + t * cp_orient_p2;
 		break;
 	case TrainView::Spline::CardinalCubic:
-		this->DIVIDE_LINE = 3;
+		position = this->getCardinalGMTmatrix(i, t, tension, 1);
+		qt.x = position.x;	qt.y = position.y; qt.z = position.z;
+		position = this->getCardinalGMTmatrix(i, t, tension, 2);
+		orient_t.x = position.x;	orient_t.y = position.y; orient_t.z = position.z;
 		break;
 	case TrainView::Spline::CubicBSpline:
-		this->DIVIDE_LINE = 1;
+		position = this->getBSplineGMTmatrix(i, t, 1);
+		qt.x = position.x;	qt.y = position.y; qt.z = position.z;
+		position = this->getBSplineGMTmatrix(i, t, 2);
+		orient_t.x = position.x;	orient_t.y = position.y; orient_t.z = position.z;
 		break;
 	default:
 		break;
 	}
-
+	
 	//glColor3ub(255, 255, 255);
 	//glBegin(GL_QUADS);
 	//	glTexCoord2f(0.0f, 0.0f);
@@ -562,6 +570,7 @@ void TrainView::drawTrain(float t) {
 	//	glTexCoord2f(0.0f, 1.0f);
 	//	glVertex3f(qt.x - 5, qt.y + 5, qt.z - 5);
 	//glEnd();
+
 	glColor3ub(32, 32, 64);
 	this->trainModel->moveModel(20, Point3d(qt.x, qt.y + 5, qt.z));
 	this->trainModel->render();
@@ -595,29 +604,24 @@ Vector3 TrainView::getCardinalGMTmatrix(int i, float t, float tension, int type)
 		cp_p0.z, cp_p1.z, cp_p2.z, cp_p3.z,
 	};
 
-	QMatrix4x3 gMatrix = QMatrix4x3(gArr), GMMatrix;
-
 	float mArr[16] = {
 		-1.0f, 2.0f, -1.0f, 0.0f,
 		2.0f / tension - 1.0f, -3.0f / tension + 1.0f, 0.0f, 1.0f / tension,
 		-2.0f / tension + 1.0f, 3.0f / tension - 2.0f, 1.0f, 0.0f,
 		1.0f, -1.0f, 0.0f, 0.0f
 	};
-	QMatrix4x4 mMatrix = QMatrix4x4(mArr) * tension;
 	vector<float> tN = { t * t * t, t * t, t, 1.0f };
-	//GMMatrix = matrixMultiply(gMatrix, mMatrix);
-	//resultVector = matrixVect4Multiply(GMMatrix, vector<float> { t* t* t, t* t, t, 1.0f} );
 
 	resultVector.x = ((mArr[0] * tN[0] + mArr[1] * tN[1] + mArr[2] * tN[2] + mArr[3]) * cp_p0.x +
 		(mArr[4] * tN[0] + mArr[5] * tN[1] + mArr[6] * tN[2] + mArr[7]) * cp_p1.x +
 		(mArr[8] * tN[0] + mArr[9] * tN[1] + mArr[10] * tN[2] + mArr[11]) * cp_p2.x +
 		(mArr[12] * tN[0] + mArr[13] * tN[1] + mArr[14] * tN[2] + mArr[15]) * cp_p3.x)* tension;
-
+	
 	resultVector.y = ((mArr[0] * tN[0] + mArr[1] * tN[1] + mArr[2] * tN[2] + mArr[3]) * cp_p0.y +
 		(mArr[4] * tN[0] + mArr[5] * tN[1] + mArr[6] * tN[2] + mArr[7]) * cp_p1.y +
 		(mArr[8] * tN[0] + mArr[9] * tN[1] + mArr[10] * tN[2] + mArr[11]) * cp_p2.y +
 		(mArr[12] * tN[0] + mArr[13] * tN[1] + mArr[14] * tN[2] + mArr[15]) * cp_p3.y)* tension;
-
+	
 	resultVector.z = ((mArr[0] * tN[0] + mArr[1] * tN[1] + mArr[2] * tN[2] + mArr[3]) * cp_p0.z +
 		(mArr[4] * tN[0] + mArr[5] * tN[1] + mArr[6] * tN[2] + mArr[7]) * cp_p1.z +
 		(mArr[8] * tN[0] + mArr[9] * tN[1] + mArr[10] * tN[2] + mArr[11]) * cp_p2.z +
@@ -653,20 +657,13 @@ Vector3 TrainView::getBSplineGMTmatrix(int i, float t, int type) {
 		cp_p0.z, cp_p1.z, cp_p2.z, cp_p3.z,
 	};
 
-	QMatrix4x3 gMatrix = QMatrix4x3(gArr), GMMatrix;
-
 	float mArr[16] = {
 		-1.0f, 3.0f, -3.0f, 1.0f,
 		3.0f, -6.0f, 0.0f, 4.0f,
 		-3.0f, 3.0f, 3.0f, 1.0f,
 		1.0f, 0.0f, 0.0f, 0.0f
 	};
-	
-	QMatrix4x4 mMatrix = QMatrix4x4(mArr) * 1.0f / 6.0f;
 	vector<float> tN = { t * t * t, t * t, t, 1.0f };
-
-	//GMMatrix = matrixMultiply(gMatrix, mMatrix);
-	//resultVector = matrixVect4Multiply(GMMatrix, vector<float> { t* t* t, t* t, t, 1.0f});
 
 	resultVector.x = ((mArr[0] * tN[0] + mArr[1] * tN[1] + mArr[2] * tN[2] + mArr[3]) * cp_p0.x +
 		(mArr[4] * tN[0] + mArr[5] * tN[1] + mArr[6] * tN[2] + mArr[7]) * cp_p1.x +
