@@ -15,6 +15,8 @@ TrainView::TrainView(QWidget* parent) :
 	//player->play();
 	this->DIVIDE_LINE = 1;
 	this->t_time = 0;
+	this->trainSpeed = 30;
+	this->tension = 0.7;
 }
 TrainView::~TrainView()
 {}
@@ -325,7 +327,6 @@ void TrainView::drawStuff(bool doingShadows)
 
 		float percent = 1.0f;
 		float t = 0;
-		float tension = 0.7;
 		Pnt3f qt, qt0, qt1, orient_t;
 		Vector3 vect;
 
@@ -338,7 +339,7 @@ void TrainView::drawStuff(bool doingShadows)
 			break;
 		case TrainView::Spline::CardinalCubic:
 			this->DIVIDE_LINE = 25;
-			vect = this->getCardinalGMTmatrix(i, t, tension, 1);
+			vect = this->getCardinalGMTmatrix(i, t, this->tension, 1);
 			qt.x = vect.x;
 			qt.y = vect.y;
 			qt.z = vect.z;
@@ -364,7 +365,7 @@ void TrainView::drawStuff(bool doingShadows)
 				orient_t = (1.0 - t) * cp_orient_p1 + t * cp_orient_p2;
 				break;
 			case TrainView::Spline::CardinalCubic:
-				vect = this->getCardinalGMTmatrix(i, t, tension, 2);
+				vect = this->getCardinalGMTmatrix(i, t, this->tension, 2);
 				orient_t.x = vect.x;
 				orient_t.y = vect.y;
 				orient_t.z = vect.z;
@@ -386,7 +387,7 @@ void TrainView::drawStuff(bool doingShadows)
 				qt = (1.0 - t) * cp_pos_p1 + t * cp_pos_p2;
 				break;
 			case TrainView::Spline::CardinalCubic:
-				vect = this->getCardinalGMTmatrix(i, t, tension, 1);
+				vect = this->getCardinalGMTmatrix(i, t, this->tension, 1);
 				qt.x = vect.x;
 				qt.y = vect.y;
 				qt.z = vect.z;
@@ -536,7 +537,6 @@ void TrainView::drawTrain(float t) {
 	Spline splineType = (Spline)curve;
 	Pnt3f qt, orient_t;
 	Vector3 position;
-	float tension = 0.7;
 	switch (splineType)
 	{
 	case TrainView::Spline::Linear:
@@ -544,9 +544,9 @@ void TrainView::drawTrain(float t) {
 		orient_t = (1 - t) * cp_orient_p1 + t * cp_orient_p2;
 		break;
 	case TrainView::Spline::CardinalCubic:
-		position = this->getCardinalGMTmatrix(i, t, tension, 1);
+		position = this->getCardinalGMTmatrix(i, t, this->tension, 1);
 		qt.x = position.x;	qt.y = position.y; qt.z = position.z;
-		position = this->getCardinalGMTmatrix(i, t, tension, 2);
+		position = this->getCardinalGMTmatrix(i, t, this->tension, 2);
 		orient_t.x = position.x;	orient_t.y = position.y; orient_t.z = position.z;
 		break;
 	case TrainView::Spline::CubicBSpline:
@@ -558,22 +558,22 @@ void TrainView::drawTrain(float t) {
 	default:
 		break;
 	}
-	
-	//glColor3ub(255, 255, 255);
-	//glBegin(GL_QUADS);
-	//	glTexCoord2f(0.0f, 0.0f);
-	//	glVertex3f(qt.x - 5, qt.y - 5, qt.z - 5);
-	//	glTexCoord2f(1.0f, 0.0f);
-	//	glVertex3f(qt.x + 5, qt.y - 5, qt.z - 5);
-	//	glTexCoord2f(1.0f, 1.0f);
-	//	glVertex3f(qt.x + 5, qt.y + 5, qt.z - 5);
-	//	glTexCoord2f(0.0f, 1.0f);
-	//	glVertex3f(qt.x - 5, qt.y + 5, qt.z - 5);
-	//glEnd();
 
-	glColor3ub(32, 32, 64);
-	this->trainModel->moveModel(20, Point3d(qt.x, qt.y + 5, qt.z));
-	this->trainModel->render();
+	glColor3ub(255, 255, 255);
+	glBegin(GL_QUADS);
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex3f(qt.x - 5, qt.y - 5, qt.z - 5);
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex3f(qt.x + 5, qt.y - 5, qt.z - 5);
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex3f(qt.x + 5, qt.y + 5, qt.z - 5);
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex3f(qt.x - 5, qt.y + 5, qt.z - 5);
+	glEnd();
+
+	//glColor3ub(32, 32, 64);
+	//this->trainModel->moveModel(20, Point3d(qt.x, qt.y + 5, qt.z));
+	//this->trainModel->render();
 }
 
 // i, t, tension, type == 1 -> pos : type == 2 -> orient

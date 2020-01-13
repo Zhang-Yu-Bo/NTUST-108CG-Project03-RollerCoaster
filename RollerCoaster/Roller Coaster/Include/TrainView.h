@@ -72,6 +72,8 @@ public:
 
 	float t_time;
 	unsigned int DIVIDE_LINE;
+	int trainSpeed;
+	float tension;
 
 	int camera;
 	int curve;

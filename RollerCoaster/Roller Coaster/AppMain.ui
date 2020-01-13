@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1028</width>
+    <width>1032</width>
     <height>769</height>
    </rect>
   </property>
@@ -996,6 +996,22 @@ QPushButton:pressed {
        </spacer>
       </item>
       <item>
+       <widget class="QLabel" name="trainSpeedLabel">
+        <property name="font">
+         <font>
+          <family>Comic Sans MS</family>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <italic>false</italic>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Train Speed</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QSlider" name="sSpeed">
         <property name="minimumSize">
          <size>
@@ -1014,6 +1030,12 @@ QPushButton:pressed {
 	width: 15px;
 	margin: -5px 0;
  }</string>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>100</number>
         </property>
         <property name="singleStep">
          <number>1</number>
@@ -1041,6 +1063,90 @@ QPushButton:pressed {
       </item>
      </layout>
     </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <spacer name="horizontalSpacer_6">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="tensionControlLabel">
+        <property name="font">
+         <font>
+          <family>Comic Sans MS</family>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Tension Control</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="sTension">
+        <property name="minimumSize">
+         <size>
+          <width>850</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Palatino Linotype</family>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QSlider::groove:horizontal {
+	background-color: #505050;
+    height: 3px; 
+    margin: 2px 0;
+ }
+ QSlider::handle:horizontal {
+	image: url(:/AppMain/slider_handle.png);
+	width: 15px;
+	margin: -5px 0;
+ }</string>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="value">
+         <number>50</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_5">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -1048,8 +1154,8 @@ QPushButton:pressed {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1028</width>
-     <height>21</height>
+     <width>1032</width>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

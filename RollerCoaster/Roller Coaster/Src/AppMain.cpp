@@ -54,6 +54,8 @@ AppMain::AppMain(QWidget *parent)
 	connect( ui.rcpxsub		,SIGNAL(clicked()),this,SLOT(RotateControlPointSubX())				);
 	connect( ui.rcpzadd		,SIGNAL(clicked()),this,SLOT(RotateControlPointAddZ())					);
 	connect( ui.rcpzsub		,SIGNAL(clicked()),this,SLOT(RotateControlPointSubZ())				);
+
+	connect(ui.sTension		, SIGNAL(valueChanged(int)),this,SLOT(ChangeTensionOfTrack(int))			);
 }
 
 AppMain::~AppMain()
@@ -141,7 +143,7 @@ bool AppMain::eventFilter(QObject *watched, QEvent *e) {
 
 	// update train position
 	if (this->trainview->isrun) {
-		if (clock() - lastRedraw > CLOCKS_PER_SEC / 30) {
+		if (clock() - lastRedraw > CLOCKS_PER_SEC / this->trainview->trainSpeed) {
 			lastRedraw = clock();
 			this->advanceTrain();
 			this->damageMe();
@@ -303,7 +305,11 @@ void AppMain::SwitchPlayAndPause()
 
 void AppMain::ChangeSpeedOfTrain( int val )
 {
-	//m_rollerCoaster->trainSpeed = m_rollerCoaster->MAX_TRAIN_SPEED * float(val) / 100.0f;
+	this->trainview->trainSpeed = (int)(120 * float(val) / 100.0f);
+}
+
+void AppMain::ChangeTensionOfTrack(int val) {
+	this->trainview->tension = 1.0 * float(val) / 100.0f;
 }
 
 void AppMain::AddControlPoint()
