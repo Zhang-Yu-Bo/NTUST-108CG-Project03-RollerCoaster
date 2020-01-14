@@ -87,6 +87,7 @@ public:
 	QVector<QOpenGLTexture*> Textures;
 	
 	Model* trainModel;
+	Model* humanModel;
 	C3DSLoader m_3DS;
 };  
 #endif // TRAINVIEW_H  

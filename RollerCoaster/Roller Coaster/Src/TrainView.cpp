@@ -38,6 +38,7 @@ void TrainView::initializeGL()
 	// Create a train object
 	//this->trainModel = new Model("../../Models/Sci_fi_Train.obj", 30, Point3d(0.0, 5.0, 0.0));
 	this->trainModel = new Model("../../Models/train2.obj", 30, Point3d(0.0, 5.0, 0.0));
+	this->humanModel = new Model("../../Models/human.obj", 30, Point3d(0.0, 5.0, 0.0));
 	//m_3DS.Init("../../Models/Sci_fi_Train.3ds");
 }
 void TrainView::initializeTexture()
@@ -184,8 +185,10 @@ void TrainView::paintGL()
 	//this->m_3DS.Draw();
 
 	// Particle testing
-	//ParticleAPI::ProcessParticles();
-	//ParticleAPI::DrawParticles();
+	if (this->isrun) {
+		ParticleAPI::ProcessParticles();
+		ParticleAPI::DrawParticles();
+	}
 }
 
 //************************************************************************
@@ -707,6 +710,9 @@ void TrainView::drawTrain(float t) {
 				glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y + 10, qt1.z + cross_t.z);
 				glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y, qt1.z + cross_t.z);
 			glEnd();
+			glColor3ub(30, 30, 30);
+			//this->humanModel->moveModel(30, Point3d((qt0.x + qt1.x) / 2, (qt0.y + qt1.y) / 2, (qt0.z + qt1.z) / 2));
+			//this->humanModel->render(false, false);
 			count++;
 		}
 		else {
