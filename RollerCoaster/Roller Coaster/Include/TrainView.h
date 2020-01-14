@@ -109,5 +109,6 @@ public:
 	int pos[4][2] = { {0,0}, {0,-1}, {-1,-1}, {-1,0} };
 
 	CubeMap* skyBox;
+	
 };  
 #endif // TRAINVIEW_H  

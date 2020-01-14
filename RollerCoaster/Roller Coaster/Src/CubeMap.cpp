@@ -3,6 +3,51 @@
 CubeMap::CubeMap() {
 	this->skyboxVertices = new float[108]{
 		// positions          
+		-100.0f,  100.0f, -100.0f,
+		-100.0f, -100.0f, -100.0f,
+		 100.0f, -100.0f, -100.0f,
+		 100.0f, -100.0f, -100.0f,
+		 100.0f,  100.0f, -100.0f,
+		-100.0f,  100.0f, -100.0f,
+
+		-100.0f, -100.0f,  100.0f,
+		-100.0f, -100.0f, -100.0f,
+		-100.0f,  100.0f, -100.0f,
+		-100.0f,  100.0f, -100.0f,
+		-100.0f,  100.0f,  100.0f,
+		-100.0f, -100.0f,  100.0f,
+
+		 100.0f, -100.0f, -100.0f,
+		 100.0f, -100.0f,  100.0f,
+		 100.0f,  100.0f,  100.0f,
+		 100.0f,  100.0f,  100.0f,
+		 100.0f,  100.0f, -100.0f,
+		 100.0f, -100.0f, -100.0f,
+
+		-100.0f, -100.0f,  100.0f,
+		-100.0f,  100.0f,  100.0f,
+		 100.0f,  100.0f,  100.0f,
+		 100.0f,  100.0f,  100.0f,
+		 100.0f, -100.0f,  100.0f,
+		-100.0f, -100.0f,  100.0f,
+
+		-100.0f,  100.0f, -100.0f,
+		 100.0f,  100.0f, -100.0f,
+		 100.0f,  100.0f,  100.0f,
+		 100.0f,  100.0f,  100.0f,
+		-100.0f,  100.0f,  100.0f,
+		-100.0f,  100.0f, -100.0f,
+
+		-100.0f, -100.0f, -100.0f,
+		-100.0f, -100.0f,  100.0f,
+		 100.0f, -100.0f, -100.0f,
+		 100.0f, -100.0f, -100.0f,
+		-100.0f, -100.0f,  100.0f,
+		 100.0f, -100.0f,  100.0f
+	};
+	/*
+	this->skyboxVertices = new float[108]{
+		// positions          
 		-1.0f,  1.0f, -1.0f,
 		-1.0f, -1.0f, -1.0f,
 		 1.0f, -1.0f, -1.0f,
@@ -45,6 +90,7 @@ CubeMap::CubeMap() {
 		-1.0f, -1.0f,  1.0f,
 		 1.0f, -1.0f,  1.0f
 	};
+	*/
 }
 
 void CubeMap::DimensionTransformation(GLfloat source[], GLfloat target[][4]) {
@@ -114,10 +160,17 @@ void CubeMap::InitVAO()
 void CubeMap::InitVBO()
 {
 	//Set each vertex's position
-	for (int i = 0; i < 36; i++)
-		vertices << QVector3D(this->skyboxVertices[i * 3 + 0], 
-			this->skyboxVertices[i * 3 + 1],
-			this->skyboxVertices[i * 3 + 2]);
+	//for (int i = 0; i < 36; i++)
+	//	vertices << QVector3D(this->skyboxVertices[i * 3 + 0], 
+	//		this->skyboxVertices[i * 3 + 1],
+	//		this->skyboxVertices[i * 3 + 2]);
+
+	vertices << QVector3D(100, 100, 100) << QVector3D(100, 100, -100) << QVector3D(100, -100, -100) << QVector3D(100, -100, 100)
+		<< QVector3D(-100, -100, 100) << QVector3D(-100, -100, -100) << QVector3D(-100, 100, -100) << QVector3D(-100, 100, 100)
+		<< QVector3D(-100, 100, 100) << QVector3D(-100, 100, -100) << QVector3D(100, 100, -100) << QVector3D(100, 100, 100)
+		<< QVector3D(100, -100, 100) << QVector3D(100, -100, -100) << QVector3D(-100, -100, -100) << QVector3D(-100, -100, 100)
+		<< QVector3D(-100, -100, 100) << QVector3D(-100, 100, 100) << QVector3D(100, 100, 100) << QVector3D(100, -100, 100)
+		<< QVector3D(-100, 100, -100) << QVector3D(-100, -100, -100) << QVector3D(100, -100, -100) << QVector3D(100, 100, -100);
 
 	vvbo.create();
 	// Bind the buffer so that it is the current active buffer

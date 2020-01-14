@@ -232,38 +232,6 @@ void TrainView::paintGL()
 	glLightfv(GL_LIGHT2, GL_POSITION, lightPosition3);
 	glLightfv(GL_LIGHT2, GL_DIFFUSE, blueLight);
 
-
-	this->skyBox->Begin();
-	GLuint skyBoxTextureID;
-	glActiveTexture(GL_TEXTURE0);
-	glGenTextures(1, &skyBoxTextureID);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxTextureID);
-	int skyWidth, skyHeight;
-	unsigned char* skyBox;
-	skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_up.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
-	skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_down.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
-	skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_left.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
-	skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_right.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
-	skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_front.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
-	skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_back.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	glDepthMask(GL_FALSE);
-	this->skyBox->shaderProgram->setUniformValue("skybox", 0);
-	this->skyBox->Paint(ProjectionMatrex, ModelViewMatrex);
-	glDepthMask(GL_TRUE);
-	this->skyBox->End();
-
 	//*********************************************************************
 	// now draw the ground plane
 	//*********************************************************************
@@ -298,6 +266,39 @@ void TrainView::paintGL()
 	glGetFloatv(GL_MODELVIEW_MATRIX, ModelViewMatrex);
 	//Get projection matrix
 	glGetFloatv(GL_PROJECTION_MATRIX, ProjectionMatrex);
+
+	// Sky Box
+	//this->skyBox->Begin();
+	//glActiveTexture(GL_TEXTURE0);
+	//GLuint skyBoxTextureID;
+	//glGenTextures(1, &skyBoxTextureID);
+	//glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxTextureID);
+	//int skyWidth, skyHeight;
+	//unsigned char* skyBox;
+	//skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_up.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	//glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	//skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_down.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	//glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	//skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_left.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	//glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	//skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_right.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	//glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	//skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_front.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	//glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	//skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_back.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	//glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	//
+	//glDepthMask(GL_FALSE);
+	//glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxTextureID);
+	//this->skyBox->shaderProgram->setUniformValue("skybox", 0);
+	//this->skyBox->Paint(ProjectionMatrex, ModelViewMatrex);
+	//glDepthMask(GL_TRUE);
+	//this->skyBox->End();
 
 	//Call triangle's render function, pass ModelViewMatrex and ProjectionMatrex
 	triangle->Paint(ProjectionMatrex, ModelViewMatrex);
