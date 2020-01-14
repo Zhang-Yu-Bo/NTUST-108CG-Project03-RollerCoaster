@@ -13,6 +13,7 @@
 #include "Square.h"
 #include "Model.h"
 #include "3DSLoader.h"
+#include "CubeMap.h"
 
 class AppMain;
 class CTrack;
@@ -107,5 +108,7 @@ public:
 	float minHeight, maxHeight;
 	//determine quad or tirangle positions
 	int pos[4][2] = { {0,0}, {0,-1}, {-1,-1}, {-1,0} };
+
+	CubeMap* skyUp;
 };  
 #endif // TRAINVIEW_H  
