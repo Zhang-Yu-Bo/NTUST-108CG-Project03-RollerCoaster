@@ -88,7 +88,8 @@ private:
 		void RotateControlPointSubZ();
 
 		void ChangeTensionOfTrack(int val);
-
+		void AddCarsNum();
+		void DeleteCarsNum();
 protected:
 	bool eventFilter(QObject *watched, QEvent *e); 
 };

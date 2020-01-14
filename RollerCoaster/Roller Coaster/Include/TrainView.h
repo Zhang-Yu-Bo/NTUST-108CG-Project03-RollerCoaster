@@ -74,6 +74,7 @@ public:
 	unsigned int DIVIDE_LINE;
 	int trainSpeed;
 	float tension;
+	int carNum;
 
 	int camera;
 	int curve;

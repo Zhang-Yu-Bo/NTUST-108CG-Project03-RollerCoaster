@@ -13,10 +13,11 @@ TrainView::TrainView(QWidget* parent) :
 	//player->setMedia(QUrl(QUrl::fromLocalFile("..\\..\\Roller Coaster\\x64\\Debug\\Stereopony-Tsukiakari No Michishirube.mp3")));
 	//player->setVolume(50);
 	//player->play();
-	this->DIVIDE_LINE = 1;
+	this->DIVIDE_LINE = 15;
 	this->t_time = 0;
 	this->trainSpeed = 30;
 	this->tension = 0.7;
+	this->carNum = 0;
 }
 TrainView::~TrainView()
 {}
@@ -334,22 +335,15 @@ void TrainView::drawStuff(bool doingShadows)
 		switch (splineType)
 		{
 		case TrainView::Spline::Linear:
-			this->DIVIDE_LINE = 25;
 			qt = (1.0 - t) * cp_pos_p1 + t * cp_pos_p2;
 			break;
 		case TrainView::Spline::CardinalCubic:
-			this->DIVIDE_LINE = 25;
 			vect = this->getCardinalGMTmatrix(i, t, this->tension, 1);
-			qt.x = vect.x;
-			qt.y = vect.y;
-			qt.z = vect.z;
+			qt.x = vect.x;	qt.y = vect.y;	qt.z = vect.z;
 			break;
 		case TrainView::Spline::CubicBSpline:
-			this->DIVIDE_LINE = 25;
 			vect = this->getBSplineGMTmatrix(i, t, 1);
-			qt.x = vect.x;
-			qt.y = vect.y;
-			qt.z = vect.z;
+			qt.x = vect.x;	qt.y = vect.y;	qt.z = vect.z;
 			break;
 		default:
 			break;
@@ -535,8 +529,10 @@ void TrainView::drawTrain(float t) {
 	Pnt3f cp_orient_p2 = this->m_pTrack->points[(i + 1) % m_pTrack->points.size()].orient;
 
 	Spline splineType = (Spline)curve;
-	Pnt3f qt, orient_t;
+	Pnt3f qt, orient_t, qt0, qt1;
 	Vector3 position;
+	float percent = 1.0f / this->DIVIDE_LINE;
+
 	switch (splineType)
 	{
 	case TrainView::Spline::Linear:
@@ -558,21 +554,173 @@ void TrainView::drawTrain(float t) {
 	default:
 		break;
 	}
+	qt0 = qt;
+	t += percent;
+	switch (splineType)
+	{
+	case TrainView::Spline::Linear:
+		qt = (1 - t) * cp_pos_p1 + t * cp_pos_p2;
+		break;
+	case TrainView::Spline::CardinalCubic:
+		position = this->getCardinalGMTmatrix(i, t, this->tension, 1);
+		qt.x = position.x;	qt.y = position.y; qt.z = position.z;
+		break;
+	case TrainView::Spline::CubicBSpline:
+		position = this->getBSplineGMTmatrix(i, t, 1);
+		qt.x = position.x;	qt.y = position.y; qt.z = position.z;
+		break;
+	default:
+		break;
+	}
+	qt1 = qt;
 
-	glColor3ub(255, 255, 255);
+	orient_t.normalize();
+	Pnt3f cross_t = (qt1 - qt0) * orient_t;
+	cross_t.normalize();
+	cross_t = cross_t * 2.5f;
+
+	// train head
+	glColor3ub(0, 0, 0);
 	glBegin(GL_QUADS);
-		glTexCoord2f(0.0f, 0.0f);
-		glVertex3f(qt.x - 5, qt.y - 5, qt.z - 5);
-		glTexCoord2f(1.0f, 0.0f);
-		glVertex3f(qt.x + 5, qt.y - 5, qt.z - 5);
-		glTexCoord2f(1.0f, 1.0f);
-		glVertex3f(qt.x + 5, qt.y + 5, qt.z - 5);
-		glTexCoord2f(0.0f, 1.0f);
-		glVertex3f(qt.x - 5, qt.y + 5, qt.z - 5);
+		// back
+		glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
+		glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y + 10, qt0.z + cross_t.z);			   
+		glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y + 10, qt0.z - cross_t.z);
+		glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y, qt0.z - cross_t.z);
+		// up
+		glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y + 10, qt0.z + cross_t.z);
+		glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y + 10, qt1.z + cross_t.z);
+		glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y + 10, qt1.z - cross_t.z);
+		glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y + 10, qt0.z - cross_t.z);
+		// front
+		glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y, qt1.z + cross_t.z);
+		glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y + 10, qt1.z + cross_t.z);
+		glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y + 10, qt1.z - cross_t.z);
+		glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y, qt1.z - cross_t.z);
+		// down
+		glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
+		glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y, qt1.z + cross_t.z);
+		glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y, qt1.z - cross_t.z);
+		glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y, qt0.z - cross_t.z);
+		// left
+		glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y, qt0.z - cross_t.z);
+		glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y + 10, qt0.z - cross_t.z);
+		glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y + 10, qt1.z - cross_t.z);
+		glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y, qt1.z - cross_t.z);
+		// right
+		glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
+		glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y + 10, qt0.z + cross_t.z);
+		glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y + 10, qt1.z + cross_t.z);
+		glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y, qt1.z + cross_t.z);
 	glEnd();
 
+	int count = 0, tempI = 0;
+	t -= percent;
+	while (count < this->carNum) {
+		t -= 2 * percent;
+		if (t < 0) {
+			t = 1.0;
+			i = (i - 1) % m_pTrack->points.size();
+		}
+		cp_pos_p1 = this->m_pTrack->points[i].pos;
+		cp_pos_p2 = this->m_pTrack->points[(i + 1) % m_pTrack->points.size()].pos;
+
+		cp_orient_p1 = this->m_pTrack->points[i].orient;
+		cp_orient_p2 = this->m_pTrack->points[(i + 1) % m_pTrack->points.size()].orient;
+		switch (splineType)
+		{
+		case TrainView::Spline::Linear:
+			qt = (1 - t) * cp_pos_p1 + t * cp_pos_p2;
+			orient_t = (1 - t) * cp_orient_p1 + t * cp_orient_p2;
+			break;
+		case TrainView::Spline::CardinalCubic:
+			position = this->getCardinalGMTmatrix(i, t, this->tension, 1);
+			qt.x = position.x;	qt.y = position.y; qt.z = position.z;
+			position = this->getCardinalGMTmatrix(i, t, this->tension, 2);
+			orient_t.x = position.x;	orient_t.y = position.y; orient_t.z = position.z;
+			break;
+		case TrainView::Spline::CubicBSpline:
+			position = this->getBSplineGMTmatrix(i, t, 1);
+			qt.x = position.x;	qt.y = position.y; qt.z = position.z;
+			position = this->getBSplineGMTmatrix(i, t, 2);
+			orient_t.x = position.x;	orient_t.y = position.y; orient_t.z = position.z;
+			break;
+		default:
+			break;
+		}
+		qt0 = qt;
+		t += percent;
+		switch (splineType)
+		{
+		case TrainView::Spline::Linear:
+			qt = (1 - t) * cp_pos_p1 + t * cp_pos_p2;
+			break;
+		case TrainView::Spline::CardinalCubic:
+			position = this->getCardinalGMTmatrix(i, t, this->tension, 1);
+			qt.x = position.x;	qt.y = position.y; qt.z = position.z;
+			break;
+		case TrainView::Spline::CubicBSpline:
+			position = this->getBSplineGMTmatrix(i, t, 1);
+			qt.x = position.x;	qt.y = position.y; qt.z = position.z;
+			break;
+		default:
+			break;
+		}
+		qt1 = qt;
+
+		orient_t.normalize();
+		Pnt3f cross_t = (qt1 - qt0) * orient_t;
+		cross_t.normalize();
+		cross_t = cross_t * 2.5f;
+		if (tempI == 0) {
+			// train head
+			glColor3ub(60, 60, 60);
+			glBegin(GL_QUADS);
+				// back
+				glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
+				glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y + 10, qt0.z + cross_t.z);
+				glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y + 10, qt0.z - cross_t.z);
+				glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y, qt0.z - cross_t.z);
+				// up
+				glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y + 10, qt0.z + cross_t.z);
+				glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y + 10, qt1.z + cross_t.z);
+				glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y + 10, qt1.z - cross_t.z);
+				glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y + 10, qt0.z - cross_t.z);
+				// front
+				glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y, qt1.z + cross_t.z);
+				glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y + 10, qt1.z + cross_t.z);
+				glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y + 10, qt1.z - cross_t.z);
+				glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y, qt1.z - cross_t.z);
+				// down
+				glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
+				glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y, qt1.z + cross_t.z);
+				glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y, qt1.z - cross_t.z);
+				glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y, qt0.z - cross_t.z);
+				// left
+				glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y, qt0.z - cross_t.z);
+				glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y + 10, qt0.z - cross_t.z);
+				glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y + 10, qt1.z - cross_t.z);
+				glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y, qt1.z - cross_t.z);
+				// right
+				glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
+				glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y + 10, qt0.z + cross_t.z);
+				glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y + 10, qt1.z + cross_t.z);
+				glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y, qt1.z + cross_t.z);
+			glEnd();
+			count++;
+		}
+		else {
+			glColor3ub(255, 255, 255);
+			glBegin(GL_LINES);
+				glVertex3f(qt0.x, qt0.y + 3, qt0.z);
+				glVertex3f(qt1.x, qt1.y + 3, qt1.z);
+			glEnd();
+		}
+		tempI = (tempI + 1) % 2;
+	}
+
 	//glColor3ub(32, 32, 64);
-	//this->trainModel->moveModel(20, Point3d(qt.x, qt.y + 5, qt.z));
+	//this->trainModel->moveModel(20, Point3d(qt0.x + cross_t.x, qt0.y + cross_t.y + 3, qt0.z + cross_t.z));
 	//this->trainModel->render();
 }
 
@@ -665,20 +813,22 @@ Vector3 TrainView::getBSplineGMTmatrix(int i, float t, int type) {
 	};
 	vector<float> tN = { t * t * t, t * t, t, 1.0f };
 
+	float bTension = 6 * this->tension;
+
 	resultVector.x = ((mArr[0] * tN[0] + mArr[1] * tN[1] + mArr[2] * tN[2] + mArr[3]) * cp_p0.x +
 		(mArr[4] * tN[0] + mArr[5] * tN[1] + mArr[6] * tN[2] + mArr[7]) * cp_p1.x +
 		(mArr[8] * tN[0] + mArr[9] * tN[1] + mArr[10] * tN[2] + mArr[11]) * cp_p2.x +
-		(mArr[12] * tN[0] + mArr[13] * tN[1] + mArr[14] * tN[2] + mArr[15]) * cp_p3.x) / 6;
+		(mArr[12] * tN[0] + mArr[13] * tN[1] + mArr[14] * tN[2] + mArr[15]) * cp_p3.x) / bTension;
 
 	resultVector.y = ((mArr[0] * tN[0] + mArr[1] * tN[1] + mArr[2] * tN[2] + mArr[3]) * cp_p0.y +
 		(mArr[4] * tN[0] + mArr[5] * tN[1] + mArr[6] * tN[2] + mArr[7]) * cp_p1.y +
 		(mArr[8] * tN[0] + mArr[9] * tN[1] + mArr[10] * tN[2] + mArr[11]) * cp_p2.y +
-		(mArr[12] * tN[0] + mArr[13] * tN[1] + mArr[14] * tN[2] + mArr[15]) * cp_p3.y) / 6;
+		(mArr[12] * tN[0] + mArr[13] * tN[1] + mArr[14] * tN[2] + mArr[15]) * cp_p3.y) / bTension;
 
 	resultVector.z = ((mArr[0] * tN[0] + mArr[1] * tN[1] + mArr[2] * tN[2] + mArr[3]) * cp_p0.z +
 		(mArr[4] * tN[0] + mArr[5] * tN[1] + mArr[6] * tN[2] + mArr[7]) * cp_p1.z +
 		(mArr[8] * tN[0] + mArr[9] * tN[1] + mArr[10] * tN[2] + mArr[11]) * cp_p2.z +
-		(mArr[12] * tN[0] + mArr[13] * tN[1] + mArr[14] * tN[2] + mArr[15]) * cp_p3.z) / 6;
+		(mArr[12] * tN[0] + mArr[13] * tN[1] + mArr[14] * tN[2] + mArr[15]) * cp_p3.z) / bTension;
 
 	return resultVector;
 }

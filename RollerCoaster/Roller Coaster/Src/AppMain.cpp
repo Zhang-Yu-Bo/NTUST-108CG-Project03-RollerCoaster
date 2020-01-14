@@ -56,6 +56,8 @@ AppMain::AppMain(QWidget *parent)
 	connect( ui.rcpzsub		,SIGNAL(clicked()),this,SLOT(RotateControlPointSubZ())				);
 
 	connect(ui.sTension		, SIGNAL(valueChanged(int)),this,SLOT(ChangeTensionOfTrack(int))			);
+	connect(ui.carsNumAdd, SIGNAL(clicked()), this, SLOT(AddCarsNum()));
+	connect(ui.carsNumSub, SIGNAL(clicked()), this, SLOT(DeleteCarsNum()));
 }
 
 AppMain::~AppMain()
@@ -345,6 +347,14 @@ void AppMain::DeleteControlPoint()
 	this->damageMe();
 }
 
+void AppMain::AddCarsNum() {
+	this->trainview->carNum++;
+}
+
+void AppMain::DeleteCarsNum() {
+	if (this->trainview->carNum > 0)
+		this->trainview->carNum--;
+}
 
 //***************************************************************************
 //
