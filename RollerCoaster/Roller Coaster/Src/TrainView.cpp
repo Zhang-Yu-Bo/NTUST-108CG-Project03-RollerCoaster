@@ -2,6 +2,7 @@
 #include "ParticleAPI.h"
 #include <QtMultimedia/QMediaPlayer>
 #include <qmatrix.h>
+#include <SOIL/SOIL.h>
 
 TrainView::TrainView(QWidget* parent) :
 	QGLWidget(parent)
@@ -231,7 +232,29 @@ void TrainView::paintGL()
 	glLightfv(GL_LIGHT2, GL_POSITION, lightPosition3);
 	glLightfv(GL_LIGHT2, GL_DIFFUSE, blueLight);
 
-
+	glEnable(GL_TEXTURE0);
+	GLuint skyBoxTextureID;
+	glGenTextures(1, &skyBoxTextureID);
+	int skyWidth, skyHeight;
+	unsigned char* skyBox;
+	skyBox = SOIL_load_image("..\\..\\Roller Coaster\\Textures\\space_skybox_up.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	skyBox = SOIL_load_image("..\\..\\Roller Coaster\\Textures\\space_skybox_down.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 1, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	skyBox = SOIL_load_image("..\\..\\Roller Coaster\\Textures\\space_skybox_left.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 2, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	skyBox = SOIL_load_image("..\\..\\Roller Coaster\\Textures\\space_skybox_right.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 3, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	skyBox = SOIL_load_image("..\\..\\Roller Coaster\\Textures\\space_skybox_front.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 4, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	skyBox = SOIL_load_image("..\\..\\Roller Coaster\\Textures\\space_skybox_back.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 5, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glDisable(GL_TEXTURE0);
 
 	//*********************************************************************
 	// now draw the ground plane

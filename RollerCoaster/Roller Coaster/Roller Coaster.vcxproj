@@ -187,6 +187,10 @@
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\Model.cpp" />
     <ClCompile Include="Src\ParticleAPI.cpp" />
+    <ClCompile Include="Src\SOIL\image_DXT.c" />
+    <ClCompile Include="Src\SOIL\image_helper.c" />
+    <ClCompile Include="Src\SOIL\SOIL.c" />
+    <ClCompile Include="Src\SOIL\stb_image_aug.c" />
     <ClCompile Include="Src\Square.cpp" />
     <ClCompile Include="Src\Track.cpp" />
     <ClCompile Include="Src\TrainView.cpp" />
@@ -226,6 +230,12 @@
     <ClInclude Include="Include\Model.h" />
     <ClInclude Include="Include\ParticleAPI.h" />
     <ClInclude Include="Include\point3d.h" />
+    <ClInclude Include="Include\SOIL\image_DXT.h" />
+    <ClInclude Include="Include\SOIL\image_helper.h" />
+    <ClInclude Include="Include\SOIL\SOIL.h" />
+    <ClInclude Include="Include\SOIL\stbi_DDS_aug.h" />
+    <ClInclude Include="Include\SOIL\stbi_DDS_aug_c.h" />
+    <ClInclude Include="Include\SOIL\stb_image_aug.h" />
     <ClInclude Include="Include\Square.h" />
     <ClInclude Include="Include\Track.H" />
     <ClInclude Include="Include\vector.h" />
