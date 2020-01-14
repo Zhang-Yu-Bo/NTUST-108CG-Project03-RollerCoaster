@@ -63,6 +63,101 @@ void TrainView::resetArcball()
 	arcball.setup(this, 40, 250, .2f, .4f, 0);
 }
 
+void TrainView::calcMinMax()
+{
+	maxHeight = 0;
+	minHeight = heightMap[0][0];
+	for (int x = 1; x < xSize; x++)
+	{
+		for (int z = 1; z < zSize; z++)
+		{
+			if (heightMap[x][z] > maxHeight)
+			{
+				maxHeight = heightMap[x][z];
+			}
+			if (heightMap[x][z] < minHeight)
+			{
+				minHeight = heightMap[x][z];
+			}
+		}
+	}
+}
+
+void resetHeightMap(float heightMap[1000][1000])
+{
+	memset(heightMap, 0, sizeof(heightMap[0][0]) * 1000 * 1000);
+}
+
+void TrainView::faultAlgorithm(int iterations)
+{
+	for (int i = 0; i < iterations; i++) {
+		float v = static_cast <float> (rand());
+		float a = sin(v);
+		float b = cos(v);
+		float d = sqrt(pow(xSize, 2) + pow(zSize, 2));
+		float c = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX))* d - d / 2;
+		for (int x = 0; x < xSize; x++) {
+			for (int z = 0; z < zSize; z++) {
+				if (a * x + b * z - c > 0) {
+					heightMap[x][z] += 1;
+				}
+				else {
+					heightMap[x][z] -= 1;
+				}
+			}
+		}
+	}
+	calcMinMax();
+}
+
+void TrainView::drawTerrain() {
+	int newX, newZ;
+	for (int x = 0; x < xSize; x++)
+	{
+		for (int z = 0; z < zSize; z++)
+		{
+			int storeX1 = x - pos[2][0];  //store vars used to get last two verts
+			int storeZ1 = z - pos[2][1];
+			int storeX2 = x - pos[3][0];
+			int storeZ2 = z - pos[3][1];
+			if (quadStrip) {
+				glBegin(GL_QUAD_STRIP);
+			}
+			else {
+				glBegin(GL_TRIANGLE_STRIP);
+			}
+			for (int i = 3; i >= 0; i--)
+			{
+				if (i == 0) {
+					newX = x - pos[i][0];
+					newZ = z - pos[i][1];
+					storeX1 = newX;
+					storeZ1 = newZ;
+				}
+				else if (i == 1) {
+					newX = x - pos[i][0];
+					newZ = z - pos[i][1];
+					storeX2 = newX;
+					storeZ2 = newZ;
+				}
+				else if (i == 2) {
+					newX = storeX2;
+					newZ = storeZ2;
+				}
+				else {
+					newX = storeX1;
+					newZ = storeZ1;
+				}
+				float newY = heightMap[newX][newZ];
+				float gradient = (newY - minHeight) / (maxHeight - minHeight);
+				glColor3f(0, gradient, 0); //green
+				glVertex3f(newX - 250, newY - 50, newZ - 250); //draw
+			}
+			glEnd();
+		}
+	}
+}
+
 void TrainView::paintGL()
 {
 
@@ -139,9 +234,15 @@ void TrainView::paintGL()
 	//*********************************************************************
 	// now draw the ground plane
 	//*********************************************************************
+	if (!isGen) {
+		resetHeightMap(this->heightMap);
+		faultAlgorithm(1000);
+		isGen = true;
+	}
 	setupFloor();
 	glDisable(GL_LIGHTING);
-	drawFloor(200, 10);
+	drawTerrain();
+	//drawFloor(200, 10);
 
 
 	//*********************************************************************

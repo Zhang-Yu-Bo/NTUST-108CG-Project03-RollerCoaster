@@ -65,6 +65,10 @@ public:
 	Vector3 getCardinalGMTmatrix(int, float, float, int);
 	Vector3 getBSplineGMTmatrix(int, float, int);
 
+	void drawTerrain();
+	void calcMinMax();
+	void faultAlgorithm(int iterations);
+
 public:
 	ArcBallCam		arcball;			// keep an ArcBall for the UI
 	int				selectedCube;		// simple - just remember which cube is selected
@@ -93,5 +97,14 @@ public:
 	Pnt3f eyePosition;
 	Pnt3f centerPosition;
 	Pnt3f upPosition;
+
+	// Terrain Generation
+	bool quadStrip = false;
+	float heightMap[1000][1000];
+	int xSize = 500, zSize = 500;
+	bool isGen = false;
+	float minHeight, maxHeight;
+	//determine quad or tirangle positions
+	int pos[4][2] = { {0,0}, {0,-1}, {-1,-1}, {-1,0} };
 };  
 #endif // TRAINVIEW_H  
