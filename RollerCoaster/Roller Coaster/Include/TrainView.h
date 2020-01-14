@@ -67,6 +67,7 @@ public:
 	Vector3 getBSplineGMTmatrix(int, float, int);
 
 	void drawTerrain();
+	void drawSkyBox(int distance);
 	void calcMinMax();
 	void resetHeightMap();
 	void faultAlgorithm(int iterations);
@@ -103,7 +104,7 @@ public:
 	// Terrain Generation
 	bool quadStrip = false;
 	float heightMap[1000][1000];
-	int xSize = 700, zSize = 700;
+	int xSize = 500, zSize = 500;
 	bool isGen = false;
 	float minHeight, maxHeight;
 	//determine quad or tirangle positions

@@ -163,6 +163,106 @@ void TrainView::drawTerrain() {
 	}
 }
 
+GLuint ReadTexture(const char* texturePath) {
+	GLuint texID;
+	QImage textureImg;// = QImage(texturePath);
+	textureImg.load(texturePath);
+	QSize sss = textureImg.size();
+	if (textureImg.isNull())
+		qDebug() << "Error when loading texture img";
+	textureImg = QGLWidget::convertToGLFormat(textureImg);
+
+	glGenTextures(1, &texID);
+	glBindTexture(GL_TEXTURE_2D, texID);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureImg.width(), textureImg.height(), 0, GL_RGBA,
+		GL_UNSIGNED_BYTE, textureImg.bits());
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return texID;
+}
+
+void TrainView::drawSkyBox(int distance)
+{
+	vector<GLuint> skyboxVect;
+	skyboxVect.push_back(ReadTexture("../../Textures/space_skybox_front.jpg"));
+	skyboxVect.push_back(ReadTexture("../../Textures/space_skybox_left.jpg"));
+	skyboxVect.push_back(ReadTexture("../../Textures/space_skybox_back.jpg"));
+	skyboxVect.push_back(ReadTexture("../../Textures/space_skybox_right.jpg"));
+	skyboxVect.push_back(ReadTexture("../../Textures/space_skybox_up.jpg"));
+	skyboxVect.push_back(ReadTexture("../../Textures/space_skybox_down.jpg"));
+
+	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_BLEND);
+	
+	const int dis = distance;
+	// Just in case we set all vertices to white.
+	glColor4f(1, 1, 1, 1);
+
+	// Render the front quad
+	glBindTexture(GL_TEXTURE_2D, skyboxVect[0]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0); glVertex3f(dis, -dis, -dis);
+	glTexCoord2f(1, 0); glVertex3f(-dis, -dis, -dis);
+	glTexCoord2f(1, 1); glVertex3f(-dis, dis, -dis);
+	glTexCoord2f(0, 1); glVertex3f(dis, dis, -dis);
+	glEnd();
+
+	// Render the left quad
+	glBindTexture(GL_TEXTURE_2D, skyboxVect[1]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0); glVertex3f(dis, -dis, dis);
+	glTexCoord2f(1, 0); glVertex3f(dis, -dis, -dis);
+	glTexCoord2f(1, 1); glVertex3f(dis, dis, -dis);
+	glTexCoord2f(0, 1); glVertex3f(dis, dis, dis);
+	glEnd();
+
+	// Render the back quad
+	glBindTexture(GL_TEXTURE_2D, skyboxVect[2]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0); glVertex3f(-dis, -dis, dis);
+	glTexCoord2f(1, 0); glVertex3f(dis, -dis, dis);
+	glTexCoord2f(1, 1); glVertex3f(dis, dis, dis);
+	glTexCoord2f(0, 1); glVertex3f(-dis, dis, dis);
+
+	glEnd();
+
+	// Render the right quad
+	glBindTexture(GL_TEXTURE_2D, skyboxVect[3]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0); glVertex3f(-dis, -dis, -dis);
+	glTexCoord2f(1, 0); glVertex3f(-dis, -dis, dis);
+	glTexCoord2f(1, 1); glVertex3f(-dis, dis, dis);
+	glTexCoord2f(0, 1); glVertex3f(-dis, dis, -dis);
+	glEnd();
+
+	// Render the top quad
+	glBindTexture(GL_TEXTURE_2D, skyboxVect[4]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 1); glVertex3f(-dis, dis, -dis);
+	glTexCoord2f(0, 0); glVertex3f(-dis, dis, dis);
+	glTexCoord2f(1, 0); glVertex3f(dis, dis, dis);
+	glTexCoord2f(1, 1); glVertex3f(dis, dis, -dis);
+	glEnd();
+
+	// Render the bottom quad
+	glBindTexture(GL_TEXTURE_2D, skyboxVect[5]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0); glVertex3f(-dis, -dis, -dis);
+	glTexCoord2f(0, 1); glVertex3f(-dis, -dis, dis);
+	glTexCoord2f(1, 1); glVertex3f(dis, -dis, dis);
+	glTexCoord2f(1, 0); glVertex3f(dis, -dis, -dis);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 void TrainView::paintGL()
 {
 
@@ -254,6 +354,7 @@ void TrainView::paintGL()
 	glDisable(GL_BLEND);
 	glFlush();
 	glDisable(GL_LIGHTING);
+	drawSkyBox(400);
 	drawTerrain();
 	//drawFloor(200, 10);
 
