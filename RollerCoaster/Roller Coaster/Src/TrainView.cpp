@@ -43,6 +43,8 @@ void TrainView::initializeGL()
 	this->trainModel = new Model("../../Models/train2.obj", 30, Point3d(0.0, 5.0, 0.0));
 	this->humanModel = new Model("../../Models/human.obj", 30, Point3d(0.0, 5.0, 0.0));
 	//m_3DS.Init("../../Models/Sci_fi_Train.3ds");
+
+	resetHeightMap();
 }
 void TrainView::initializeTexture()
 {
@@ -83,7 +85,7 @@ void TrainView::calcMinMax()
 	}
 }
 
-void resetHeightMap(float heightMap[1000][1000])
+void TrainView::resetHeightMap()
 {
 	memset(heightMap, 0, sizeof(heightMap[0][0]) * 1000 * 1000);
 }
@@ -235,11 +237,21 @@ void TrainView::paintGL()
 	// now draw the ground plane
 	//*********************************************************************
 	if (!isGen) {
-		resetHeightMap(this->heightMap);
-		faultAlgorithm(1000);
+		faultAlgorithm(400);
 		isGen = true;
 	}
-	setupFloor();
+	//setupFloor();
+	// enable blending
+	glEnable(GL_BLEND);
+	// enable read-only depth buffer
+	glDepthMask(GL_FALSE);
+	// set the blend function to what we use for transparency
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	// set back to normal depth buffer mode (writable)
+	glDepthMask(GL_TRUE);
+	// disable blending
+	glDisable(GL_BLEND);
+	glFlush();
 	glDisable(GL_LIGHTING);
 	drawTerrain();
 	//drawFloor(200, 10);

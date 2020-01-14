@@ -67,6 +67,7 @@ public:
 
 	void drawTerrain();
 	void calcMinMax();
+	void resetHeightMap();
 	void faultAlgorithm(int iterations);
 
 public:
@@ -101,7 +102,7 @@ public:
 	// Terrain Generation
 	bool quadStrip = false;
 	float heightMap[1000][1000];
-	int xSize = 500, zSize = 500;
+	int xSize = 700, zSize = 700;
 	bool isGen = false;
 	float minHeight, maxHeight;
 	//determine quad or tirangle positions
