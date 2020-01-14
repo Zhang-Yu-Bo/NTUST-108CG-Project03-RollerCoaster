@@ -674,7 +674,7 @@ void TrainView::drawTrain(float t) {
 		cross_t = cross_t * 2.5f;
 		if (tempI == 0) {
 			// train head
-			glColor3ub(60, 60, 60);
+			glColor3ub(120, 120, 120);
 			glBegin(GL_QUADS);
 				// back
 				glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
