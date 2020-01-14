@@ -1,7 +1,50 @@
 #include <CubeMap.h>
 
 CubeMap::CubeMap() {
+	this->skyboxVertices = new float[108]{
+		// positions          
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
 
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		-1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f
+	};
 }
 
 void CubeMap::DimensionTransformation(GLfloat source[], GLfloat target[][4]) {
@@ -28,9 +71,9 @@ void CubeMap::Paint(GLfloat* ProjectionMatrix, GLfloat* ModelViewMatrix) {
 	DimensionTransformation(ProjectionMatrix, P);
 	DimensionTransformation(ModelViewMatrix, MV);
 	//pass projection matrix to shader
-	shaderProgram->setUniformValue("ProjectionMatrix", P);
+	shaderProgram->setUniformValue("projection", P);
 	//pass modelview matrix to shader
-	shaderProgram->setUniformValue("ModelViewMatrix", MV);
+	shaderProgram->setUniformValue("view", MV);
 
 	// Bind the buffer so that it is the current active buffer
 	vvbo.bind();
@@ -41,14 +84,6 @@ void CubeMap::Paint(GLfloat* ProjectionMatrix, GLfloat* ModelViewMatrix) {
 	//unbind buffer
 	vvbo.release();
 
-	// Bind the buffer so that it is the current active buffer
-	uvbo.bind();
-	// Enable Attribute 1
-	shaderProgram->enableAttributeArray(1);
-
-	shaderProgram->setAttributeArray(1, GL_FLOAT, 0, 2, NULL);
-	uvbo.release();
-
 	//Draw triangles with 4 indices starting from the 0th index
 	glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.size());
 }
@@ -57,14 +92,13 @@ void CubeMap::End()
 {
 	//Disable Attribute 0&1
 	shaderProgram->disableAttributeArray(0);
-	shaderProgram->disableAttributeArray(1);
 
 	vao.release();
 	shaderProgram->release();
 }
 
 void CubeMap::Init() {
-	InitShader("./Shader/Square.vs", "./Shader/Square.fs");
+	InitShader("./Shader/CubeMape.vs", "./Shader/CubeMape.fs");
 	InitVAO();
 	InitVBO();
 }
@@ -80,11 +114,11 @@ void CubeMap::InitVAO()
 void CubeMap::InitVBO()
 {
 	//Set each vertex's position
-	vertices << QVector3D(-500.0f, 500, 500.0f)
-		<< QVector3D(-500.0f, 500, -500.0f)
-		<< QVector3D(500.0f, 500, -500.0f)
-		<< QVector3D(500.0f, 500, 500.0f);
-	// Create Buffer for position
+	for (int i = 0; i < 36; i++)
+		vertices << QVector3D(this->skyboxVertices[i * 3 + 0], 
+			this->skyboxVertices[i * 3 + 1],
+			this->skyboxVertices[i * 3 + 2]);
+
 	vvbo.create();
 	// Bind the buffer so that it is the current active buffer
 	vvbo.bind();
@@ -92,20 +126,6 @@ void CubeMap::InitVBO()
 	vvbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
 	// Allocate and initialize the information
 	vvbo.allocate(vertices.constData(), vertices.size() * sizeof(QVector3D));
-
-	//Set each vertex's uv
-	uvs << QVector2D(0.0f, 0.0f)
-		<< QVector2D(0.0f, 1.0f)
-		<< QVector2D(1.0f, 1.0f)
-		<< QVector2D(1.0f, .0f);
-	// Create Buffer for uv
-	uvbo.create();
-	// Bind the buffer so that it is the current active buffer
-	uvbo.bind();
-	// Since we will never change the data that we are about to pass the Buffer, we will say that the Usage Pattern is StaticDraw
-	uvbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
-	// Allocate and initialize the information
-	uvbo.allocate(uvs.constData(), uvs.size() * sizeof(QVector2D));
 }
 
 void CubeMap::InitShader(QString vertexShaderPath, QString fragmentShaderPath)
