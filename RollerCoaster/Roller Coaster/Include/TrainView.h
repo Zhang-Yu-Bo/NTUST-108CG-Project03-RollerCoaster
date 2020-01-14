@@ -89,5 +89,9 @@ public:
 	Model* trainModel;
 	Model* humanModel;
 	C3DSLoader m_3DS;
+
+	Pnt3f eyePosition;
+	Pnt3f centerPosition;
+	Pnt3f upPosition;
 };  
 #endif // TRAINVIEW_H  

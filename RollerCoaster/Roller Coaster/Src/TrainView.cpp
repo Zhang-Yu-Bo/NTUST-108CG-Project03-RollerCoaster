@@ -18,6 +18,9 @@ TrainView::TrainView(QWidget* parent) :
 	this->trainSpeed = 30;
 	this->tension = 0.7;
 	this->carNum = 0;
+	this->eyePosition = Pnt3f(50, 5, 0);
+	this->centerPosition = Pnt3f(0, 5, 50);
+	this->upPosition = Pnt3f(50, 10, 0);
 }
 TrainView::~TrainView()
 {}
@@ -235,20 +238,17 @@ setProjection()
 	// TODO: 
 	// put code for train view projection here!	
 	//####################################################################
-
-	//glMatrixMode(GL_PROJECTION);
-	//gluPerspective(120, 1, 1, 200); glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
-	//matrix4_look.normalize();
-	//matrix2_look.normalize();
-	//gluLookAt(matrix1_look.x, matrix1_look.y + 5,
-	//	matrix1_look.z, matrix1_look.x + matrix4_look.x,
-	//	matrix1_look.y + matrix4_look.y + 5,
-	//	matrix1_look.z + matrix4_look.z, matrix2_look.x,
-	//	matrix2_look.y + 5,
-	//	matrix2_look.z);
-
 	else {
+		glMatrixMode(GL_PROJECTION);
+		gluPerspective(120, 1, 1, 200); glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		this->centerPosition.normalize();
+		this->upPosition.normalize();
+		gluLookAt(this->eyePosition.x, this->eyePosition.y + 5, this->eyePosition.z,
+			this->eyePosition.x + this->centerPosition.x,
+			this->eyePosition.y + this->centerPosition.y + 5,
+			this->eyePosition.z + this->centerPosition.z,
+			this->upPosition.x, this->upPosition.y + 5, this->upPosition.z);
 #ifdef EXAMPLE_SOLUTION
 		trainCamView(this, aspect);
 #endif
@@ -581,6 +581,27 @@ void TrainView::drawTrain(float t) {
 	Pnt3f cross_t = (qt1 - qt0) * orient_t;
 	cross_t.normalize();
 	cross_t = cross_t * 2.5f;
+
+	// set train view parameter
+	switch (splineType)
+	{
+	case TrainView::Spline::Linear:
+		qt = (1 - (t + percent)) * cp_pos_p1 + (t + percent) * cp_pos_p2;
+		break;
+	case TrainView::Spline::CardinalCubic:
+		position = this->getCardinalGMTmatrix(i, (t + percent), this->tension, 1);
+		qt.x = position.x;	qt.y = position.y; qt.z = position.z;
+		break;
+	case TrainView::Spline::CubicBSpline:
+		position = this->getBSplineGMTmatrix(i, (t + percent), 1);
+		qt.x = position.x;	qt.y = position.y; qt.z = position.z;
+		break;
+	default:
+		break;
+	}
+	this->eyePosition = qt;
+	this->centerPosition = qt - qt1;
+	this->upPosition = Pnt3f(qt.x, qt.y + 10, qt.z) - qt;
 
 	// train head
 	glColor3ub(0, 0, 0);
