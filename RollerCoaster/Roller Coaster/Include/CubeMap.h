@@ -22,11 +22,11 @@ public:
 	QOpenGLShader* vertexShader;
 	QOpenGLShader* fragmentShader;
 	QVector<QVector3D> vertices;
-	QVector<QVector2D> uvs;
 	QOpenGLVertexArrayObject vao;
 	QOpenGLBuffer vvbo;
-	QOpenGLBuffer uvbo;
 
+
+	float* skyboxVertices;
 	CubeMap();
 	void Init();
 	void InitVAO();
