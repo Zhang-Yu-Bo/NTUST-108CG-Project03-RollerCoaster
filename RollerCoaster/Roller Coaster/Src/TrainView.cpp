@@ -37,6 +37,8 @@ void TrainView::initializeGL()
 	//Initialize the square object
 	square->Init();
 	//Initialize texture 
+	skyUp = new CubeMap();
+	skyUp->Init();
 	initializeTexture();
 
 	// Create a train object
@@ -52,7 +54,7 @@ void TrainView::initializeTexture()
 	Textures.push_back(texture);
 	texture = new QOpenGLTexture(QImage("../../Textures/Sci fi Train color.png"));
 	Textures.push_back(texture);
-	texture = new QOpenGLTexture(QImage("../../Textures/wooden_resize.png"));
+	texture = new QOpenGLTexture(QImage("../../Textures/space_skybox_up.jpg"));
 	Textures.push_back(texture);
 }
 void TrainView::resetArcball()
@@ -230,29 +232,27 @@ void TrainView::paintGL()
 	glLightfv(GL_LIGHT2, GL_POSITION, lightPosition3);
 	glLightfv(GL_LIGHT2, GL_DIFFUSE, blueLight);
 
-	glEnable(GL_TEXTURE0);
-	GLuint skyBoxTextureID;
-	glGenTextures(1, &skyBoxTextureID);
-	int skyWidth, skyHeight;
-	unsigned char* skyBox;
-	skyBox = SOIL_load_image("..\\..\\Roller Coaster\\Textures\\space_skybox_up.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
-	skyBox = SOIL_load_image("..\\..\\Roller Coaster\\Textures\\space_skybox_down.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 1, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
-	skyBox = SOIL_load_image("..\\..\\Roller Coaster\\Textures\\space_skybox_left.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 2, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
-	skyBox = SOIL_load_image("..\\..\\Roller Coaster\\Textures\\space_skybox_right.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 3, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
-	skyBox = SOIL_load_image("..\\..\\Roller Coaster\\Textures\\space_skybox_front.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 4, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
-	skyBox = SOIL_load_image("..\\..\\Roller Coaster\\Textures\\space_skybox_back.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 5, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glDisable(GL_TEXTURE0);
+	//GLuint skyBoxTextureID;
+	//glGenTextures(1, &skyBoxTextureID);
+	//int skyWidth, skyHeight;
+	//unsigned char* skyBox;
+	//skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_up.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	//glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	//skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_down.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	//glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	//skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_left.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	//glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	//skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_right.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	//glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	//skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_front.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	//glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	//skyBox = SOIL_load_image("..\\..\\Textures\\space_skybox_back.jpg", &skyWidth, &skyHeight, 0, SOIL_LOAD_RGB);
+	//glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, skyWidth, skyHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, skyBox);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	//*********************************************************************
 	// now draw the ground plane
@@ -303,6 +303,13 @@ void TrainView::paintGL()
 	//Call square's render function, pass ModelViewMatrex and ProjectionMatrex
 	square->Paint(ProjectionMatrex, ModelViewMatrex);
 	square->End();
+
+	skyUp->Begin();
+	glActiveTexture(GL_TEXTURE0);
+	Textures[2]->bind();
+	skyUp->shaderProgram->setUniformValue("Texture", 0);
+	skyUp->Paint(ProjectionMatrex, ModelViewMatrex);
+	skyUp->End();
 
 	// Model.h draw *.obj file
 	//Model* mTest = new Model("..\\..\\Roller Coaster\\x64\\Debug\\arrow.obj", 100, Point3d(0.0, 0.0, 0.0));

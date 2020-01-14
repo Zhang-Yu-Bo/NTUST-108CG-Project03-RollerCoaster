@@ -184,6 +184,7 @@
     <ClCompile Include="Src\AppMain.cpp" />
     <ClCompile Include="Src\CBMPLoader.cpp" />
     <ClCompile Include="Src\ControlPoint.cpp" />
+    <ClCompile Include="Src\CubeMap.cpp" />
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\Model.cpp" />
     <ClCompile Include="Src\ParticleAPI.cpp" />
@@ -227,6 +228,7 @@
     <ClInclude Include="Include\3DSLoader.h" />
     <ClInclude Include="Include\CbmpLoader.h" />
     <ClInclude Include="Include\ControlPoint.H" />
+    <ClInclude Include="Include\CubeMap.h" />
     <ClInclude Include="Include\Model.h" />
     <ClInclude Include="Include\ParticleAPI.h" />
     <ClInclude Include="Include\point3d.h" />
