@@ -768,7 +768,7 @@ doPick(int mx, int my)
 
 void TrainView::drawTrain(float t) {
 	t *= this->m_pTrack->points.size();
-	size_t i;
+	int i;
 	for (i = 0; t > 1; t -= 1)
 		i++;
 
@@ -892,7 +892,8 @@ void TrainView::drawTrain(float t) {
 		t -= 2 * percent;
 		if (t < 0) {
 			t = 1.0;
-			i = (i - 1) % m_pTrack->points.size();
+			i -= 1;
+			i = i < 0 ? m_pTrack->points.size()-1 : i;
 		}
 		cp_pos_p1 = this->m_pTrack->points[i].pos;
 		cp_pos_p2 = this->m_pTrack->points[(i + 1) % m_pTrack->points.size()].pos;
